@@ -2,6 +2,7 @@ package org.levalnik.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.levalnik.model.enums.Status;
 
 import java.time.LocalDateTime;
 
@@ -32,6 +33,9 @@ public class Project {
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private Status status;
 
     @PrePersist
     protected void onCreate() {

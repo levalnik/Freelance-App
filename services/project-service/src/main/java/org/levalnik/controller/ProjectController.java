@@ -1,8 +1,12 @@
 package org.levalnik.controller;
 
+import org.levalnik.DTO.ProjectDTO;
 import org.levalnik.model.Project;
+import org.levalnik.model.enums.Status;
 import org.levalnik.service.ProjectService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +18,11 @@ import java.util.List;
 public class ProjectController {
 
     private final ProjectService projectService;
+
+    @GetMapping("/status/{status}")
+    public ResponseEntity<Page<ProjectDTO>> getProjectsByStatus(@PathVariable Status status, Pageable pageable) {
+        return ResponseEntity.ok(projectService.getProjectsByStatus(status, pageable));
+    }
 
     @GetMapping
     public ResponseEntity<List<Project>> getAllProjects() {

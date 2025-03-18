@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
+import org.levalnik.model.enums.Status;
 
 @Data
 @Builder
@@ -20,6 +21,9 @@ public class ProjectDTO {
     @NotNull(message = "Budget is required")
     @Min(value = 1, message = "Budget must be greater than zero")
     private Double budget;
+
+    @NotNull
+    private Status status;
 
     @NotNull(message = "Client ID is required")
     private Long clientId;
