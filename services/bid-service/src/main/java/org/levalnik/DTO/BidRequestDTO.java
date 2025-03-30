@@ -11,6 +11,7 @@ import org.levalnik.model.enums.BidStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -19,10 +20,10 @@ import java.time.LocalDateTime;
 public class BidRequestDTO {
 
     @NotNull(message = "Project ID must not be null")
-    private Long projectId;
+    private UUID projectId;
 
     @NotNull(message = "Freelancer ID must not be null")
-    private Long freelancerId;
+    private UUID freelancerId;
 
     @NotNull(message = "Bid amount must not be null")
     @DecimalMin(value = "0.01", message = "Bid amount must be greater than zero")

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -14,14 +15,14 @@ import java.time.LocalDateTime;
 public class Bid {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(nullable = false)
-    private Long projectId;
+    private UUID projectId;
 
     @Column(nullable = false)
-    private Long freelancerId;
+    private UUID freelancerId;
 
     @Column(nullable = false)
     private BigDecimal amount;

@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS users (
-    id BIGSERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(50) NOT NULL UNIQUE,
     first_name VARCHAR(50) NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS users (
     );
 
 CREATE TABLE IF NOT EXISTS user_permissions (
-    user_id BIGINT NOT NULL,
+    user_id UUID NOT NULL,
     permission VARCHAR(50) NOT NULL,
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
     );

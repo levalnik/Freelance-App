@@ -7,11 +7,13 @@ import lombok.Builder;
 import lombok.Data;
 import org.levalnik.model.enums.Status;
 
+import java.util.UUID;
+
 @Data
 @Builder
 public class ProjectDTO {
 
-    private Long id;
+    private UUID id;
 
     @NotBlank(message = "Title is required")
     private String title;

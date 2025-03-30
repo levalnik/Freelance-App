@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -18,7 +19,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class UserDTO {
 
-    private Long id;
+    private UUID id;
 
     @NotBlank
     @Size(min = 3, max = 50)

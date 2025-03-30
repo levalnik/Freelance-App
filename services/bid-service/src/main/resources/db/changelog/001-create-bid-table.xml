@@ -7,7 +7,7 @@
 
     <changeSet id="1-create-bids-table" author="levalnik">
         <createTable tableName="bids">
-            <column name="id" type="BIGINT">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="project_id" type="BIGINT">

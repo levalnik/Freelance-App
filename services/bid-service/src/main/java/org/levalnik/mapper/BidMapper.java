@@ -14,7 +14,7 @@ public class BidMapper {
         bid.setProjectId(dto.getProjectId());
         bid.setFreelancerId(dto.getFreelancerId());
         bid.setAmount(dto.getAmount());
-        bid.setStatus(BidStatus.PENDING); // Устанавливаем начальный статус
+        bid.setStatus(BidStatus.PENDING);
         bid.setCreatedAt(java.time.LocalDateTime.now());
         return bid;
     }

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -30,5 +31,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN TRUE ELSE FALSE END FROM User u WHERE u.username = ?1 OR u.email = ?2")
     boolean existsByUsernameOrEmail(String username, String email);
 
-    Optional<User> findByIdAndStatus(Long id, Status status);
+    Optional<User> findByIdAndStatus(UUID id, Status status);
 }

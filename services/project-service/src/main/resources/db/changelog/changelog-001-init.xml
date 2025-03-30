@@ -7,7 +7,7 @@
 
     <changeSet id="changelog-001-init" author="levalnik">
         <createTable tableName="projects">
-            <column name="id" type="bigint" autoIncrement="true">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="title" type="varchar(255)">

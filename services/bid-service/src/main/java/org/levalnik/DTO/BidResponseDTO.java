@@ -7,15 +7,16 @@ import lombok.NoArgsConstructor;
 import org.levalnik.model.enums.BidStatus;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class BidResponseDTO {
-    private Long id;
-    private Long projectId;
-    private Long freelancerId;
+    private UUID id;
+    private UUID projectId;
+    private UUID freelancerId;
     private BigDecimal amount;
     private BidStatus status;
     private LocalDateTime createdAt;

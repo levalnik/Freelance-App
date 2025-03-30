@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -39,12 +40,12 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         user = new User();
-        user.setId(1L);
+        user.setId(UUID.randomUUID());
         user.setUsername("testuser");
         user.setEmail("test@example.com");
 
         userDTO = new UserDTO();
-        userDTO.setId(1L);
+        userDTO.setId(UUID.randomUUID());
         userDTO.setUsername("testuser");
         userDTO.setEmail("test@example.com");
     }

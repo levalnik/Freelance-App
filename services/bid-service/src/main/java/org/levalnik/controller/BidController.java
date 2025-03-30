@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -21,12 +22,12 @@ public class BidController {
     private final BidService bidService;
 
     @GetMapping("/project/{projectId}")
-    public ResponseEntity<List<BidResponseDTO>> getBidsByProject(@PathVariable Long projectId) {
+    public ResponseEntity<List<BidResponseDTO>> getBidsByProject(@PathVariable UUID projectId) {
         return ResponseEntity.ok(bidService.getBidsByProject(projectId));
     }
 
     @GetMapping("/freelancer/{freelancerId}")
-    public ResponseEntity<List<BidResponseDTO>> getBidsByFreelancer(@PathVariable Long freelancerId) {
+    public ResponseEntity<List<BidResponseDTO>> getBidsByFreelancer(@PathVariable UUID freelancerId) {
         return ResponseEntity.ok(bidService.getBidsByFreelancer(freelancerId));
     }
 
@@ -42,7 +43,7 @@ public class BidController {
 
     @PutMapping("/{bidId}/status")
     public ResponseEntity<BidResponseDTO> updateBidStatus(
-            @PathVariable Long bidId,
+            @PathVariable UUID bidId,
             @RequestParam BidStatus status) {
         return bidService.updateBidStatus(bidId, status)
                 .map(ResponseEntity::ok)
@@ -50,7 +51,7 @@ public class BidController {
     }
 
     @DeleteMapping("/{bidId}")
-    public ResponseEntity<Void> deleteBid(@PathVariable Long bidId) {
+    public ResponseEntity<Void> deleteBid(@PathVariable UUID bidId) {
         bidService.deleteBid(bidId);
         return ResponseEntity.noContent().build();
     }

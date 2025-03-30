@@ -14,11 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
-/**
- * Service for managing bids in the system.
- */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -27,13 +25,6 @@ public class BidService {
     private final BidRepository bidRepository;
     private final BidMapper bidMapper;
 
-    /**
-     * Creates a new bid in the system.
-     *
-     * @param bidRequestDTO the bid request containing bid details
-     * @return the created bid response
-     * @throws IllegalArgumentException if the request is invalid
-     */
     @Transactional
     public BidResponseDTO createBid(BidRequestDTO bidRequestDTO) {
         if (bidRequestDTO == null) {
@@ -49,7 +40,7 @@ public class BidService {
     }
 
     @Transactional(readOnly = true)
-    public List<BidResponseDTO> getBidsByProject(Long projectId) {
+    public List<BidResponseDTO> getBidsByProject(UUID projectId) {
         log.info("Fetching bids for project ID: {}", projectId);
         List<Bid> bids = bidRepository.findByProjectId(projectId);
 
@@ -58,7 +49,7 @@ public class BidService {
                 .collect(Collectors.toList());
     }
 
-    public List<BidResponseDTO> getBidsByFreelancer(Long freelancerId) {
+    public List<BidResponseDTO> getBidsByFreelancer(UUID freelancerId) {
         log.info("Fetching bids for freelancer ID: {}", freelancerId);
         List<Bid> bids = bidRepository.findByFreelancerId(freelancerId);
 
@@ -77,7 +68,7 @@ public class BidService {
     }
 
     @Transactional
-    public Optional<BidResponseDTO> updateBidStatus(Long bidId, BidStatus status) {
+    public Optional<BidResponseDTO> updateBidStatus(UUID bidId, BidStatus status) {
         log.info("Updating status of bid ID: {} to {}", bidId, status);
         Optional<Bid> optionalBid = bidRepository.findById(bidId);
 
@@ -93,7 +84,7 @@ public class BidService {
     }
 
     @Transactional
-    public void deleteBid(Long bidId) {
+    public void deleteBid(UUID bidId) {
         log.info("Deleting bid with ID: {}", bidId);
         if (!bidRepository.existsById(bidId)) {
             throw new EntityNotFoundException("Bid with ID: " + bidId + " not found");

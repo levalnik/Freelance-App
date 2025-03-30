@@ -15,6 +15,7 @@ import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Email;
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -24,8 +25,8 @@ import java.util.Set;
 @AllArgsConstructor
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(nullable = false, unique = true)
     @NotNull
