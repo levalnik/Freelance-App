@@ -1,0 +1,109 @@
+version: '3.8'
+
+services:
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db-user:5432/userdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      db-user:
+        condition: service_healthy
+    networks:
+      - backend
+
+  project-service:
+    build: ./project-service
+    container_name: project-service
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db-project:5432/project_service
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      db-project:
+        condition: service_healthy
+    networks:
+      - backend
+
+  bid-service:
+    build: ./bid-service
+    container_name: bid-service
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db-bid:5432/bid_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      db-bid:
+        condition: service_healthy
+    networks:
+      - backend
+
+  db-user:
+    image: postgres
+    container_name: db-user
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: userdb
+    volumes:
+      - db-user-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d userdb"]
+      interval: 10s
+      retries: 5
+
+  db-project:
+    image: postgres
+    container_name: db-project
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: project_service
+    volumes:
+      - db-project-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d project_service"]
+      interval: 10s
+      retries: 5
+
+  db-bid:
+    image: postgres
+    container_name: db-bid
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: bid_db
+    volumes:
+      - db-bid-data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d bid_db"]
+      interval: 10s
+      retries: 5
+
+volumes:
+  db-user-data:
+  db-project-data:
+  db-bid-data:
+
+networks:
+  backend:

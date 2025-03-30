@@ -1,27 +1,20 @@
-server:
-  port: 8083
-
 spring:
-  application:
-    name: bid-service
-
   datasource:
     url: jdbc:postgresql://localhost:5434/bid_db
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
-
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
         show_sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
 
   liquibase:
-    change-log: classpath:db/changelog/db.changelog-master.xml
-
-logging:
-  level:
-    org.hibernate.SQL: DEBUG
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+    enabled: true
+    default-schema: public

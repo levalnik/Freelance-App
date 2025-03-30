@@ -54,7 +54,7 @@ public class User {
 
     @Column(nullable = false)
     @NotNull
-    @Size(min = 8) // предполагается минимальная длина пароля
+    @Size(min = 8)
     private String password;
 
     @Column(nullable = false)
