@@ -1,7 +1,8 @@
 package org.levalnik.model.enums;
 
 public enum BidStatus {
-    Pending,
-    Accepted,
-    Rejected
+    PENDING,    // Ожидает рассмотрения
+    ACCEPTED,   // Принято
+    REJECTED,   // Отклонено
+    WITHDRAWN   // Отозвано фрилансером
 }
