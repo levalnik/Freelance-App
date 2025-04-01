@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -65,7 +66,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO updateUser(Long id, UserDTO userDTO) {
+    public UserDTO updateUser(UUID id, UserDTO userDTO) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + id));
 
@@ -81,11 +82,21 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteById(Long id) {
+    public void deleteById(UUID id) {
         if (!userRepository.existsById(id)) {
             throw new EntityNotFoundException("User not found with ID: " + id);
         }
         userRepository.deleteById(id);
         log.info("Deleted user with ID: {}", id);
+    }
+
+    @Transactional
+    public void updateProjectCount(UUID clientId) {
+        log.info("Updating project count for client: {}", clientId);
+    }
+
+    @Transactional
+    public void updateBidCount(UUID freelancerId) {
+        log.info("Updating bid count for freelancer: {}", freelancerId);
     }
 }

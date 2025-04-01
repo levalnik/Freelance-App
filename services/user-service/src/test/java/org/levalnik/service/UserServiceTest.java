@@ -37,6 +37,9 @@ class UserServiceTest {
     private User user;
     private UserDTO userDTO;
 
+    private UUID userId = UUID.randomUUID();
+
+
     @BeforeEach
     void setUp() {
         user = new User();
@@ -105,11 +108,11 @@ class UserServiceTest {
 
     @Test
     void testUpdateUser_UserExists_Success() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(userRepository.save(user)).thenReturn(user);
         when(userMapper.toDTO(user)).thenReturn(userDTO);
 
-        UserDTO updatedUser = userService.updateUser(1L, userDTO);
+        UserDTO updatedUser = userService.updateUser(userId, userDTO);
 
         assertEquals("testuser", updatedUser.getUsername());
         verify(userRepository, times(1)).save(user);
@@ -117,24 +120,24 @@ class UserServiceTest {
 
     @Test
     void testUpdateUser_UserNotFound_ThrowsException() {
-        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> userService.updateUser(1L, userDTO));
+        assertThrows(EntityNotFoundException.class, () -> userService.updateUser(userId, userDTO));
     }
 
     @Test
     void testDeleteById_UserExists_Success() {
-        when(userRepository.existsById(1L)).thenReturn(true);
-        doNothing().when(userRepository).deleteById(1L);
+        when(userRepository.existsById(userId)).thenReturn(true);
+        doNothing().when(userRepository).deleteById(userId);
 
-        assertDoesNotThrow(() -> userService.deleteById(1L));
-        verify(userRepository, times(1)).deleteById(1L);
+        assertDoesNotThrow(() -> userService.deleteById(userId));
+        verify(userRepository, times(1)).deleteById(userId);
     }
 
     @Test
     void testDeleteById_UserNotFound_ThrowsException() {
-        when(userRepository.existsById(1L)).thenReturn(false);
+        when(userRepository.existsById(userId)).thenReturn(false);
 
-        assertThrows(EntityNotFoundException.class, () -> userService.deleteById(1L));
+        assertThrows(EntityNotFoundException.class, () -> userService.deleteById(userId));
     }
 }

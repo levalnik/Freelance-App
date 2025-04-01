@@ -28,5 +28,5 @@ public class ProjectDTO {
     private Status status;
 
     @NotNull(message = "Client ID is required")
-    private Long clientId;
+    private UUID clientId;
 }

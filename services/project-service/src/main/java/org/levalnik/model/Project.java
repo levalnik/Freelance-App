@@ -30,7 +30,7 @@ public class Project {
     private Double budget;
 
     @Column(nullable = false)
-    private Long clientId;
+    private UUID clientId;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
