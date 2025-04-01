@@ -6,6 +6,8 @@ import org.levalnik.model.enums.Status;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserMapperTest {
@@ -18,7 +20,7 @@ class UserMapperTest {
     @BeforeEach
     void setUp() {
         user = new User();
-        user.setId(1L);
+        user.setId(UUID.randomUUID());
         user.setUsername("leva_kuimov");
         user.setEmail("leva_kuimov@example.com");
         user.setFirstName("leva");
@@ -26,7 +28,7 @@ class UserMapperTest {
         user.setStatus(Status.ACTIVE);
 
         userDTO = new UserDTO();
-        userDTO.setId(1L);
+        userDTO.setId(UUID.randomUUID());
         userDTO.setUsername("leva_kuimov");
         userDTO.setEmail("leva_kuimov@example.com");
         userDTO.setFirstName("leva");
