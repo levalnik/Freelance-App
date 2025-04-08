@@ -60,6 +60,7 @@ public class User {
 
     @Column(nullable = false)
     @NotNull
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     @Column(nullable = false)
@@ -71,12 +72,38 @@ public class User {
 
     @Column(nullable = false)
     @NotNull
+    @Enumerated(EnumType.STRING)
     private Status status;
 
+    @Column
     @PastOrPresent
     private LocalDateTime dateOfBirth;
 
+    @Column(nullable = false)
+    @NotNull
     private LocalDateTime registrationDate;
 
+    @Column
     private LocalDateTime lastLoginDate;
+
+    @Column(nullable = false)
+    @NotNull
+    private Integer projectCount;
+
+    @Column(nullable = false)
+    @NotNull
+    private Integer bidCount;
+
+    @PrePersist
+    protected void onCreate() {
+        registrationDate = LocalDateTime.now();
+        projectCount = 0;
+        bidCount = 0;
+        status = Status.ACTIVE;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        lastLoginDate = LocalDateTime.now();
+    }
 }

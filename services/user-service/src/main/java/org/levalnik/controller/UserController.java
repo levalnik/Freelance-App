@@ -63,4 +63,18 @@ public class UserController {
         userService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}/project-count")
+    public ResponseEntity<Void> updateProjectCount(@PathVariable UUID id) {
+        log.info("Updating project count for user with ID: {}", id);
+        userService.updateProjectCount(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}/bid-count")
+    public ResponseEntity<Void> updateBidCount(@PathVariable UUID id) {
+        log.info("Updating bid count for user with ID: {}", id);
+        userService.updateBidCount(id);
+        return ResponseEntity.ok().build();
+    }
 }

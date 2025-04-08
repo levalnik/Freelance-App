@@ -15,4 +15,6 @@ public interface BidRepository extends JpaRepository<Bid, UUID> {
     List<Bid> findByFreelancerId(UUID freelancerId);
 
     List<Bid> findByStatus(BidStatus status);
+
+    List<Bid> findByFreelancerIdAndStatus(UUID freelancerId, BidStatus status);
 }

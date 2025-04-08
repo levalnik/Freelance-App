@@ -10,24 +10,34 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="title" type="varchar(255)">
+            <column name="title" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="text"/>
-            <column name="budget" type="double precision"/>
-            <column name="created_at" type="TIMESTAMP">
-                <constraints nullable="false" />
-            </column>
-            <column name="client_id" type="bigint">
+            <column name="budget" type="double precision">
                 <constraints nullable="false"/>
             </column>
+            <column name="client_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP"/>
             <column name="status" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="bid_count" type="integer" defaultValue="0">
                 <constraints nullable="false"/>
             </column>
         </createTable>
 
         <createIndex indexName="idx_project_status" tableName="projects">
             <column name="status"/>
+        </createIndex>
+
+        <createIndex indexName="idx_project_client" tableName="projects">
+            <column name="client_id"/>
         </createIndex>
     </changeSet>
 </databaseChangeLog>

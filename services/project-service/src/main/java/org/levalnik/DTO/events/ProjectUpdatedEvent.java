@@ -20,4 +20,5 @@ public class ProjectUpdatedEvent {
     private Double budget;
     private Status status;
     private LocalDateTime updatedAt;
+    private String reason;
 } 

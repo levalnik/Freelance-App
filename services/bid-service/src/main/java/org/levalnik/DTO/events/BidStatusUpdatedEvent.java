@@ -15,7 +15,9 @@ import java.time.LocalDateTime;
 public class BidStatusUpdatedEvent {
     private UUID bidId;
     private UUID projectId;
+    private UUID freelancerId;
     private BidStatus oldStatus;
     private BidStatus newStatus;
     private LocalDateTime updatedAt;
+    private String reason;
 } 
