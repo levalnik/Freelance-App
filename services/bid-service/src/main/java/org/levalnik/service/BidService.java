@@ -138,4 +138,30 @@ public class BidService {
         
         log.info("Cancelled {} bids for freelancer: {}", bids.size(), freelancerId);
     }
+
+    @Transactional
+    public void cancelBidsByProject(UUID projectId) {
+        log.info("Cancelling all bids for project ID: {}", projectId);
+        List<Bid> bids = bidRepository.findByProjectId(projectId);
+
+        bids.forEach(bid -> {
+            bid.setStatus(BidStatus.CANCELLED);
+            bid.setUpdatedAt(LocalDateTime.now());
+            Bid updatedBid = bidRepository.save(bid);
+
+            kafkaProducerService.sendBidStatusUpdatedEvent(
+                    BidStatusUpdatedEvent.builder()
+                            .bidId(updatedBid.getId())
+                            .projectId(updatedBid.getProjectId())
+                            .freelancerId(updatedBid.getFreelancerId())
+                            .oldStatus(BidStatus.PENDING)
+                            .newStatus(BidStatus.CANCELLED)
+                            .updatedAt(updatedBid.getUpdatedAt())
+                            .reason("Freelancer account deleted")
+                            .build()
+            );
+        });
+
+        log.info("Cancelled {} bids for project: {}", bids.size(), projectId);
+    }
 }

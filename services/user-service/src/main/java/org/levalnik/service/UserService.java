@@ -125,22 +125,24 @@ public class UserService {
     @Transactional
     public void updateProjectCount(UUID clientId) {
         log.info("Updating project count for client: {}", clientId);
-        userRepository.findById(clientId)
-            .ifPresent(user -> {
-                user.setProjectCount(user.getProjectCount() + 1);
-                userRepository.save(user);
-                log.info("Updated project count for client: {}", clientId);
-            });
+        User user = userRepository.findById(clientId)
+            .orElseThrow(() -> new EntityNotFoundException("Client not found with ID: " + clientId));
+            
+        user.setProjectCount(user.getProjectCount() + 1);
+        userRepository.save(user);
+        log.info("Successfully updated project count for client: {}. New count: {}", 
+                clientId, user.getProjectCount());
     }
 
     @Transactional
     public void updateBidCount(UUID freelancerId) {
         log.info("Updating bid count for freelancer: {}", freelancerId);
-        userRepository.findById(freelancerId)
-            .ifPresent(user -> {
-                user.setBidCount(user.getBidCount() + 1);
-                userRepository.save(user);
-                log.info("Updated bid count for freelancer: {}", freelancerId);
-            });
+        User user = userRepository.findById(freelancerId)
+            .orElseThrow(() -> new EntityNotFoundException("Freelancer not found with ID: " + freelancerId));
+            
+        user.setBidCount(user.getBidCount() + 1);
+        userRepository.save(user);
+        log.info("Successfully updated bid count for freelancer: {}. New count: {}", 
+                freelancerId, user.getBidCount());
     }
 }
