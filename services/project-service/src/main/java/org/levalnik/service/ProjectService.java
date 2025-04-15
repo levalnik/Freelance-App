@@ -6,6 +6,7 @@ import org.levalnik.DTO.ProjectDTO;
 import org.levalnik.DTO.events.ProjectCreatedEvent;
 import org.levalnik.DTO.events.ProjectDeletedEvent;
 import org.levalnik.DTO.events.ProjectUpdatedEvent;
+import org.levalnik.kafka.KafkaProducer;
 import org.levalnik.model.Project;
 import org.levalnik.model.enums.Status;
 import org.levalnik.repository.ProjectRepository;
@@ -29,7 +30,7 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final ProjectMapper projectMapper;
-    private final KafkaProducerService kafkaProducerService;
+    private final KafkaProducer kafkaProducer;
 
     @Transactional(readOnly = true)
     public Page<ProjectDTO> getProjectsByStatus(Status status, Pageable pageable) {
@@ -77,7 +78,7 @@ public class ProjectService {
         Project savedProject = projectRepository.save(project);
         log.info("Project created with ID: {}", savedProject.getId());
         
-        kafkaProducerService.sendProjectCreatedEvent(
+        kafkaProducer.sendProjectCreatedEvent(
             ProjectCreatedEvent.builder()
                 .projectId(savedProject.getId())
                 .title(savedProject.getTitle())
@@ -105,7 +106,7 @@ public class ProjectService {
                     Project savedProject = projectRepository.save(project);
                     log.info("Project updated: {}", savedProject);
                     
-                    kafkaProducerService.sendProjectUpdatedEvent(
+                    kafkaProducer.sendProjectUpdatedEvent(
                         ProjectUpdatedEvent.builder()
                             .projectId(savedProject.getId())
                             .title(savedProject.getTitle())
@@ -130,14 +131,14 @@ public class ProjectService {
         Project project = projectRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Project not found with ID: " + id));
         
-        kafkaProducerService.sendProjectDeletedEvent(
+        kafkaProducer.sendProjectDeletedEvent(
             ProjectDeletedEvent.builder()
                 .projectId(id)
                 .deletedAt(LocalDateTime.now())
                 .build()
         );
         
-        projectRepository.deleteById(id);
+        projectRepository.deleteById(project.getId());
         log.info("Project with ID {} successfully deleted", id);
     }
 
@@ -154,7 +155,7 @@ public class ProjectService {
                 project.setUpdatedAt(LocalDateTime.now());
                 Project savedProject = projectRepository.save(project);
                 
-                kafkaProducerService.sendProjectUpdatedEvent(
+                kafkaProducer.sendProjectUpdatedEvent(
                     ProjectUpdatedEvent.builder()
                         .projectId(savedProject.getId())
                         .status(Status.CANCELLED)
@@ -179,5 +180,28 @@ public class ProjectService {
         projectRepository.save(project);
         
         log.info("Updated bid count for project: {}", projectId);
+    }
+
+    @Transactional
+    public void updateStatus(UUID projectId, Status status) {
+        log.info("Updating project status for project: {}", projectId);
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new EntityNotFoundException("Project not found: " + projectId));
+        project.setStatus(status);
+        project.setUpdatedAt(LocalDateTime.now());
+        Project savedProject = projectRepository.save(project);
+
+        kafkaProducer.sendProjectUpdatedEvent(
+                ProjectUpdatedEvent.builder()
+                        .projectId(savedProject.getId())
+                        .title(savedProject.getTitle())
+                        .description(savedProject.getDescription())
+                        .budget(savedProject.getBudget())
+                        .status(savedProject.getStatus())
+                        .updatedAt(LocalDateTime.now())
+                        .build()
+        );
+
+        log.info("Updated status for project: {}", projectId);
     }
 }

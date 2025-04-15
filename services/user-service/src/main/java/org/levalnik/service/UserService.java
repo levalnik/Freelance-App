@@ -1,5 +1,6 @@
 package org.levalnik.service;
 
+import org.levalnik.kafka.KafkaProducer;
 import org.levalnik.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +26,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final KafkaProducerService kafkaProducerService;
+    private final KafkaProducer kafkaProducer;
 
     @Transactional(readOnly = true)
     public Optional<UserDTO> findByUsername(String username) {
@@ -67,7 +68,7 @@ public class UserService {
         User savedUser = userRepository.save(user);
         log.info("Saved new user with ID: {}", savedUser.getId());
 
-        kafkaProducerService.sendUserCreatedEvent(
+        kafkaProducer.sendUserCreatedEvent(
             UserCreatedEvent.builder()
                 .userId(savedUser.getId())
                 .username(savedUser.getUsername())
@@ -93,7 +94,7 @@ public class UserService {
         User updatedUser = userRepository.save(user);
         log.info("Updated user with ID: {}", updatedUser.getId());
 
-        kafkaProducerService.sendUserUpdatedEvent(
+        kafkaProducer.sendUserUpdatedEvent(
             UserUpdatedEvent.builder()
                 .userId(updatedUser.getId())
                 .username(updatedUser.getUsername())
@@ -110,7 +111,7 @@ public class UserService {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + id));
 
-        kafkaProducerService.sendUserDeletedEvent(
+        kafkaProducer.sendUserDeletedEvent(
             UserDeletedEvent.builder()
                 .userId(id)
                 .userRole(user.getRole())

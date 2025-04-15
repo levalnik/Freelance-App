@@ -1,22 +1,23 @@
-package org.levalnik.service;
+package org.levalnik.kafka;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.levalnik.DTO.events.UserDeletedEvent;
 import org.levalnik.config.KafkaConfig;
 import org.levalnik.exception.EntityNotFoundException;
+import org.levalnik.service.BidService;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
 @Slf4j
-@Service
+@Component
 @RequiredArgsConstructor
-public class KafkaConsumerService {
+public class KafkaConsumer {
 
     private final BidService bidService;
     

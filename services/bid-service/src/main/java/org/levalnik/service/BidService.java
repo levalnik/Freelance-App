@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.levalnik.DTO.BidRequestDTO;
 import org.levalnik.DTO.BidResponseDTO;
+import org.levalnik.kafka.KafkaProducer;
 import org.levalnik.mapper.BidMapper;
 import org.levalnik.model.Bid;
 import org.levalnik.model.enums.BidStatus;
@@ -26,7 +27,7 @@ public class BidService {
 
     private final BidRepository bidRepository;
     private final BidMapper bidMapper;
-    private final KafkaProducerService kafkaProducerService;
+    private final KafkaProducer kafkaProducer;
 
     @Transactional
     public BidResponseDTO createBid(BidRequestDTO bidRequestDTO) {
@@ -37,7 +38,7 @@ public class BidService {
         bid.setStatus(BidStatus.PENDING);
         Bid savedBid = bidRepository.save(bid);
         
-        kafkaProducerService.sendBidCreatedEvent(
+        kafkaProducer.sendBidCreatedEvent(
             BidCreatedEvent.builder()
                 .bidId(savedBid.getId())
                 .projectId(savedBid.getProjectId())
@@ -89,7 +90,7 @@ public class BidService {
         bid.setUpdatedAt(LocalDateTime.now());
         Bid updatedBid = bidRepository.save(bid);
         
-        kafkaProducerService.sendBidStatusUpdatedEvent(
+        kafkaProducer.sendBidStatusUpdatedEvent(
             BidStatusUpdatedEvent.builder()
                 .bidId(updatedBid.getId())
                 .projectId(updatedBid.getProjectId())
@@ -123,7 +124,7 @@ public class BidService {
             bid.setUpdatedAt(LocalDateTime.now());
             Bid updatedBid = bidRepository.save(bid);
             
-            kafkaProducerService.sendBidStatusUpdatedEvent(
+            kafkaProducer.sendBidStatusUpdatedEvent(
                 BidStatusUpdatedEvent.builder()
                     .bidId(updatedBid.getId())
                     .projectId(updatedBid.getProjectId())
@@ -149,7 +150,7 @@ public class BidService {
             bid.setUpdatedAt(LocalDateTime.now());
             Bid updatedBid = bidRepository.save(bid);
 
-            kafkaProducerService.sendBidStatusUpdatedEvent(
+            kafkaProducer.sendBidStatusUpdatedEvent(
                     BidStatusUpdatedEvent.builder()
                             .bidId(updatedBid.getId())
                             .projectId(updatedBid.getProjectId())
