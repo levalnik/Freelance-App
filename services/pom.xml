@@ -13,6 +13,7 @@
         <module>user-service</module>
         <module>project-service</module>
         <module>bid-service</module>
+        <module>common</module>
     </modules>
 
     <properties>

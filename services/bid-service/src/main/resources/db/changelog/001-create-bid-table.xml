@@ -10,10 +10,10 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="project_id" type="BIGINT">
+            <column name="project_id" type="uuid">
                 <constraints nullable="false"/>
             </column>
-            <column name="freelancer_id" type="BIGINT">
+            <column name="freelancer_id" type="uuid">
                 <constraints nullable="false"/>
             </column>
             <column name="amount" type="NUMERIC(19,2)">
@@ -22,10 +22,25 @@
             <column name="created_at" type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
+            <column name="updated_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
             <column name="status" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
+
+        <createIndex indexName="idx_bid_project" tableName="bids">
+            <column name="project_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_bid_freelancer" tableName="bids">
+            <column name="freelancer_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_bid_status" tableName="bids">
+            <column name="status"/>
+        </createIndex>
     </changeSet>
 
 </databaseChangeLog>

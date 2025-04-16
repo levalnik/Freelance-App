@@ -1,5 +1,9 @@
 package org.levalnik.service;
 
+import org.levalnik.kafka.KafkaProducer;
+import org.levalnik.kafkaEvent.userKafkaEvent.UserCreatedEvent;
+import org.levalnik.kafkaEvent.userKafkaEvent.UserDeletedEvent;
+import org.levalnik.kafkaEvent.userKafkaEvent.UserUpdatedEvent;
 import org.levalnik.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,16 +16,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final KafkaProducer kafkaProducer;
 
     @Transactional(readOnly = true)
     public Optional<UserDTO> findByUsername(String username) {
@@ -62,6 +69,16 @@ public class UserService {
         User user = userMapper.toEntity(userDTO);
         User savedUser = userRepository.save(user);
         log.info("Saved new user with ID: {}", savedUser.getId());
+
+        kafkaProducer.sendUserCreatedEvent(
+                UserCreatedEvent.builder()
+                        .userId(savedUser.getId())
+                        .username(savedUser.getUsername())
+                        .userRole(savedUser.getRole())
+                        .createdAt(LocalDateTime.now())
+                        .build()
+        );
+
         return userMapper.toDTO(savedUser);
     }
 
@@ -78,14 +95,32 @@ public class UserService {
 
         User updatedUser = userRepository.save(user);
         log.info("Updated user with ID: {}", updatedUser.getId());
+
+        kafkaProducer.sendUserUpdatedEvent(
+                UserUpdatedEvent.builder()
+                        .userId(updatedUser.getId())
+                        .username(updatedUser.getUsername())
+                        .userRole(updatedUser.getRole())
+                        .updatedAt(LocalDateTime.now())
+                        .build()
+        );
+
         return userMapper.toDTO(updatedUser);
     }
 
     @Transactional
     public void deleteById(UUID id) {
-        if (!userRepository.existsById(id)) {
-            throw new EntityNotFoundException("User not found with ID: " + id);
-        }
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + id));
+
+        kafkaProducer.sendUserDeletedEvent(
+                UserDeletedEvent.builder()
+                        .userId(id)
+                        .userRole(user.getRole())
+                        .deletedAt(LocalDateTime.now())
+                        .build()
+        );
+
         userRepository.deleteById(id);
         log.info("Deleted user with ID: {}", id);
     }
@@ -93,10 +128,24 @@ public class UserService {
     @Transactional
     public void updateProjectCount(UUID clientId) {
         log.info("Updating project count for client: {}", clientId);
+        User user = userRepository.findById(clientId)
+                .orElseThrow(() -> new EntityNotFoundException("Client not found with ID: " + clientId));
+
+        user.setProjectCount(user.getProjectCount() + 1);
+        userRepository.save(user);
+        log.info("Successfully updated project count for client: {}. New count: {}",
+                clientId, user.getProjectCount());
     }
 
     @Transactional
     public void updateBidCount(UUID freelancerId) {
         log.info("Updating bid count for freelancer: {}", freelancerId);
+        User user = userRepository.findById(freelancerId)
+                .orElseThrow(() -> new EntityNotFoundException("Freelancer not found with ID: " + freelancerId));
+
+        user.setBidCount(user.getBidCount() + 1);
+        userRepository.save(user);
+        log.info("Successfully updated bid count for freelancer: {}. New count: {}",
+                freelancerId, user.getBidCount());
     }
 }

@@ -1,7 +1,7 @@
 package org.levalnik.repository;
 
+import org.levalnik.enums.projectEnum.ProjectStatus;
 import org.levalnik.model.Project;
-import org.levalnik.model.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,5 +14,5 @@ import java.util.UUID;
 public interface ProjectRepository extends JpaRepository<Project, UUID> {
     List<Project> findByClientId(UUID userId);
 
-    Page<Project> findByStatus(Status status, Pageable pageable);
+    Page<Project> findByStatus(ProjectStatus status, Pageable pageable);
 }

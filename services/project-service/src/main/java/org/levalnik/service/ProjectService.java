@@ -1,12 +1,13 @@
 package org.levalnik.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.levalnik.DTO.ProjectDTO;
-import org.levalnik.DTO.events.ProjectCreatedEvent;
-import org.levalnik.DTO.events.ProjectDeletedEvent;
-import org.levalnik.DTO.events.ProjectUpdatedEvent;
+import org.levalnik.enums.projectEnum.ProjectStatus;
+import org.levalnik.kafkaEvent.projectKafkaEvent.*;
+import org.levalnik.kafka.KafkaProducer;
 import org.levalnik.model.Project;
-import org.levalnik.model.enums.Status;
+import org.levalnik.kafkaEvent.projectKafkaEvent.ProjectCreatedEvent;
 import org.levalnik.repository.ProjectRepository;
 import org.levalnik.mapper.ProjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -22,15 +23,16 @@ import java.util.UUID;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final ProjectMapper projectMapper;
-    private final KafkaProducerService kafkaProducerService;
+    private final KafkaProducer kafkaProducer;
 
     @Transactional(readOnly = true)
-    public Page<ProjectDTO> getProjectsByStatus(Status status, Pageable pageable) {
+    public Page<ProjectDTO> getProjectsByStatus(ProjectStatus status, Pageable pageable) {
         log.info("Fetching projects with status: {}", status);
         Page<ProjectDTO> projects = projectRepository.findByStatus(status, pageable)
                 .map(projectMapper::toDTO);
@@ -38,6 +40,7 @@ public class ProjectService {
         return projects;
     }
 
+    @Transactional(readOnly = true)
     public List<Project> getAllProjects() {
         log.info("Fetching all projects");
         List<Project> projects = projectRepository.findAll();
@@ -45,6 +48,7 @@ public class ProjectService {
         return projects;
     }
 
+    @Transactional(readOnly = true)
     public Optional<Project> getProjectById(UUID id) {
         log.info("Fetching project with ID: {}", id);
         Optional<Project> project = projectRepository.findById(id);
@@ -56,6 +60,7 @@ public class ProjectService {
         return project;
     }
 
+    @Transactional(readOnly = true)
     public List<Project> getProjectsByClient(UUID clientId) {
         log.info("Fetching projects for client ID: {}", clientId);
         List<Project> projects = projectRepository.findByClientId(clientId);
@@ -66,21 +71,24 @@ public class ProjectService {
     @Transactional
     public Project createProject(Project project) {
         log.info("Creating new project: {}", project);
+        project.setCreatedAt(LocalDateTime.now());
+        project.setUpdatedAt(LocalDateTime.now());
+        project.setBidCount(0);
         Project savedProject = projectRepository.save(project);
         log.info("Project created with ID: {}", savedProject.getId());
-        
-        kafkaProducerService.sendProjectCreatedEvent(
-            ProjectCreatedEvent.builder()
-                .projectId(savedProject.getId())
-                .title(savedProject.getTitle())
-                .description(savedProject.getDescription())
-                .budget(savedProject.getBudget())
-                .clientId(savedProject.getClientId())
-                .status(savedProject.getStatus())
-                .createdAt(savedProject.getCreatedAt())
-                .build()
+
+        kafkaProducer.sendProjectCreatedEvent(
+                ProjectCreatedEvent.builder()
+                        .projectId(savedProject.getId())
+                        .title(savedProject.getTitle())
+                        .description(savedProject.getDescription())
+                        .budget(savedProject.getBudget())
+                        .clientId(savedProject.getClientId())
+                        .status(savedProject.getStatus())
+                        .createdAt(savedProject.getCreatedAt())
+                        .build()
         );
-        
+
         return savedProject;
     }
 
@@ -93,44 +101,43 @@ public class ProjectService {
                     project.setTitle(updatedProject.getTitle());
                     project.setDescription(updatedProject.getDescription());
                     project.setBudget(updatedProject.getBudget());
+                    project.setUpdatedAt(LocalDateTime.now());
                     Project savedProject = projectRepository.save(project);
                     log.info("Project updated: {}", savedProject);
-                    
-                    kafkaProducerService.sendProjectUpdatedEvent(
-                        ProjectUpdatedEvent.builder()
-                            .projectId(savedProject.getId())
-                            .title(savedProject.getTitle())
-                            .description(savedProject.getDescription())
-                            .budget(savedProject.getBudget())
-                            .status(savedProject.getStatus())
-                            .updatedAt(LocalDateTime.now())
-                            .build()
+
+                    kafkaProducer.sendProjectUpdatedEvent(
+                            ProjectUpdatedEvent.builder()
+                                    .projectId(savedProject.getId())
+                                    .title(savedProject.getTitle())
+                                    .description(savedProject.getDescription())
+                                    .budget(savedProject.getBudget())
+                                    .status(savedProject.getStatus())
+                                    .updatedAt(savedProject.getUpdatedAt())
+                                    .build()
                     );
-                    
+
                     return savedProject;
                 })
                 .orElseThrow(() -> {
                     log.error("Project with ID {} not found, update failed", id);
-                    return new RuntimeException("Project not found");
+                    return new EntityNotFoundException("Project not found with ID: " + id);
                 });
     }
 
     @Transactional
     public void deleteProject(UUID id) {
         log.info("Attempting to delete project with ID: {}", id);
-        if (!projectRepository.existsById(id)) {
-            log.error("Project with ID {} not found, delete failed", id);
-            throw new RuntimeException("Project not found");
-        }
-        
-        kafkaProducerService.sendProjectDeletedEvent(
-            ProjectDeletedEvent.builder()
-                .projectId(id)
-                .deletedAt(LocalDateTime.now())
-                .build()
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Project not found with ID: " + id));
+
+        kafkaProducer.sendProjectDeletedEvent(
+                ProjectDeletedEvent.builder()
+                        .projectId(id)
+                        .deletedAt(LocalDateTime.now())
+                        .build()
         );
-        
-        projectRepository.deleteById(id);
+
+        projectRepository.deleteById(project.getId());
         log.info("Project with ID {} successfully deleted", id);
     }
 
@@ -138,23 +145,62 @@ public class ProjectService {
     public void closeProjectsByClient(UUID clientId) {
         log.info("Closing all projects for client: {}", clientId);
         List<Project> projects = projectRepository.findByClientId(clientId);
-        
-        for (Project project : projects) {
-            project.setStatus(Status.CLOSED);
-            Project savedProject = projectRepository.save(project);
-            
-            kafkaProducerService.sendProjectUpdatedEvent(
-                ProjectUpdatedEvent.builder()
-                    .projectId(savedProject.getId())
-                    .title(savedProject.getTitle())
-                    .description(savedProject.getDescription())
-                    .budget(savedProject.getBudget())
-                    .status(savedProject.getStatus())
-                    .updatedAt(LocalDateTime.now())
-                    .build()
-            );
-        }
-        
+
+        projects.forEach(project -> {
+            if (project.getStatus() != ProjectStatus.COMPLETED &&
+                    project.getStatus() != ProjectStatus.CANCELLED) {
+
+                project.setStatus(ProjectStatus.CANCELLED);
+                project.setUpdatedAt(LocalDateTime.now());
+                Project savedProject = projectRepository.save(project);
+
+                kafkaProducer.sendProjectUpdatedEvent(
+                        ProjectUpdatedEvent.builder()
+                                .projectId(savedProject.getId())
+                                .status(ProjectStatus.CANCELLED)
+                                .updatedAt(savedProject.getUpdatedAt())
+                                .reason("Client account deleted")
+                                .build()
+                );
+            }
+        });
+
         log.info("Closed {} projects for client: {}", projects.size(), clientId);
+    }
+
+    @Transactional
+    public void updateBidCount(UUID projectId) {
+        log.info("Updating bid count for project: {}", projectId);
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new EntityNotFoundException("Project not found: " + projectId));
+
+        project.setBidCount(project.getBidCount() + 1);
+        project.setUpdatedAt(LocalDateTime.now());
+        projectRepository.save(project);
+
+        log.info("Updated bid count for project: {}", projectId);
+    }
+
+    @Transactional
+    public void updateStatus(UUID projectId, ProjectStatus status) {
+        log.info("Updating project status for project: {}", projectId);
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new EntityNotFoundException("Project not found: " + projectId));
+        project.setStatus(status);
+        project.setUpdatedAt(LocalDateTime.now());
+        Project savedProject = projectRepository.save(project);
+
+        kafkaProducer.sendProjectUpdatedEvent(
+                ProjectUpdatedEvent.builder()
+                        .projectId(savedProject.getId())
+                        .title(savedProject.getTitle())
+                        .description(savedProject.getDescription())
+                        .budget(savedProject.getBudget())
+                        .status(savedProject.getStatus())
+                        .updatedAt(LocalDateTime.now())
+                        .build()
+        );
+
+        log.info("Updated status for project: {}", projectId);
     }
 }
