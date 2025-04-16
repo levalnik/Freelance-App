@@ -1,14 +1,15 @@
 package org.levalnik.DTO;
 
-import org.levalnik.model.enums.Permission;
-import org.levalnik.model.enums.Role;
-import org.levalnik.model.enums.Status;
+import org.levalnik.enums.userEnum.UserPermission;
+import org.levalnik.enums.userEnum.UserRole;
+import org.levalnik.enums.userEnum.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import jakarta.validation.constraints.*;
+
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -49,13 +50,13 @@ public class UserDTO {
     private String password;
 
     @NotBlank
-    private Role role;
+    private UserRole role;
 
     @NotBlank
-    private Set<Permission> permissions;
+    private Set<UserPermission> permissions;
 
     @NotBlank
-    private Status status;
+    private UserStatus status;
 
     @PastOrPresent
     private LocalDateTime dateOfBirth;

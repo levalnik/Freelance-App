@@ -1,6 +1,6 @@
-package org.levalnik.model.enums;
+package org.levalnik.enums.projectEnum;
 
-public enum Status {
+public enum ProjectStatus {
     OPEN,
     DRAFT,
     PUBLISHED,

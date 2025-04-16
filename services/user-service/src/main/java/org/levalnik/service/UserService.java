@@ -1,13 +1,15 @@
 package org.levalnik.service;
 
 import org.levalnik.kafka.KafkaProducer;
+import org.levalnik.kafkaEvent.userKafkaEvent.UserCreatedEvent;
+import org.levalnik.kafkaEvent.userKafkaEvent.UserDeletedEvent;
+import org.levalnik.kafkaEvent.userKafkaEvent.UserUpdatedEvent;
 import org.levalnik.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.levalnik.DTO.UserDTO;
 import org.levalnik.exception.EntityNotFoundException;
 import org.levalnik.model.User;
-import org.levalnik.DTO.events.*;
 import org.levalnik.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -69,12 +71,12 @@ public class UserService {
         log.info("Saved new user with ID: {}", savedUser.getId());
 
         kafkaProducer.sendUserCreatedEvent(
-            UserCreatedEvent.builder()
-                .userId(savedUser.getId())
-                .username(savedUser.getUsername())
-                .userRole(savedUser.getRole())
-                .createdAt(LocalDateTime.now())
-                .build()
+                UserCreatedEvent.builder()
+                        .userId(savedUser.getId())
+                        .username(savedUser.getUsername())
+                        .userRole(savedUser.getRole())
+                        .createdAt(LocalDateTime.now())
+                        .build()
         );
 
         return userMapper.toDTO(savedUser);
@@ -95,12 +97,12 @@ public class UserService {
         log.info("Updated user with ID: {}", updatedUser.getId());
 
         kafkaProducer.sendUserUpdatedEvent(
-            UserUpdatedEvent.builder()
-                .userId(updatedUser.getId())
-                .username(updatedUser.getUsername())
-                .userRole(updatedUser.getRole())
-                .updatedAt(LocalDateTime.now())
-                .build()
+                UserUpdatedEvent.builder()
+                        .userId(updatedUser.getId())
+                        .username(updatedUser.getUsername())
+                        .userRole(updatedUser.getRole())
+                        .updatedAt(LocalDateTime.now())
+                        .build()
         );
 
         return userMapper.toDTO(updatedUser);
@@ -109,14 +111,14 @@ public class UserService {
     @Transactional
     public void deleteById(UUID id) {
         User user = userRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + id));
 
         kafkaProducer.sendUserDeletedEvent(
-            UserDeletedEvent.builder()
-                .userId(id)
-                .userRole(user.getRole())
-                .deletedAt(LocalDateTime.now())
-                .build()
+                UserDeletedEvent.builder()
+                        .userId(id)
+                        .userRole(user.getRole())
+                        .deletedAt(LocalDateTime.now())
+                        .build()
         );
 
         userRepository.deleteById(id);
@@ -127,11 +129,11 @@ public class UserService {
     public void updateProjectCount(UUID clientId) {
         log.info("Updating project count for client: {}", clientId);
         User user = userRepository.findById(clientId)
-            .orElseThrow(() -> new EntityNotFoundException("Client not found with ID: " + clientId));
-            
+                .orElseThrow(() -> new EntityNotFoundException("Client not found with ID: " + clientId));
+
         user.setProjectCount(user.getProjectCount() + 1);
         userRepository.save(user);
-        log.info("Successfully updated project count for client: {}. New count: {}", 
+        log.info("Successfully updated project count for client: {}. New count: {}",
                 clientId, user.getProjectCount());
     }
 
@@ -139,11 +141,11 @@ public class UserService {
     public void updateBidCount(UUID freelancerId) {
         log.info("Updating bid count for freelancer: {}", freelancerId);
         User user = userRepository.findById(freelancerId)
-            .orElseThrow(() -> new EntityNotFoundException("Freelancer not found with ID: " + freelancerId));
-            
+                .orElseThrow(() -> new EntityNotFoundException("Freelancer not found with ID: " + freelancerId));
+
         user.setBidCount(user.getBidCount() + 1);
         userRepository.save(user);
-        log.info("Successfully updated bid count for freelancer: {}. New count: {}", 
+        log.info("Successfully updated bid count for freelancer: {}. New count: {}",
                 freelancerId, user.getBidCount());
     }
 }

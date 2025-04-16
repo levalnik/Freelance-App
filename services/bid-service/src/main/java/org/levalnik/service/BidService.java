@@ -6,11 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.levalnik.DTO.BidRequestDTO;
 import org.levalnik.DTO.BidResponseDTO;
 import org.levalnik.kafka.KafkaProducer;
+import org.levalnik.kafkaEvent.bidKafkaEvent.*;
 import org.levalnik.mapper.BidMapper;
 import org.levalnik.model.Bid;
-import org.levalnik.model.enums.BidStatus;
+import org.levalnik.enums.bidEnum.BidStatus;
 import org.levalnik.repository.BidRepository;
-import org.levalnik.DTO.events.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,18 +37,18 @@ public class BidService {
         bid.setUpdatedAt(LocalDateTime.now());
         bid.setStatus(BidStatus.PENDING);
         Bid savedBid = bidRepository.save(bid);
-        
+
         kafkaProducer.sendBidCreatedEvent(
-            BidCreatedEvent.builder()
-                .bidId(savedBid.getId())
-                .projectId(savedBid.getProjectId())
-                .freelancerId(savedBid.getFreelancerId())
-                .amount(savedBid.getAmount())
-                .status(savedBid.getStatus())
-                .createdAt(savedBid.getCreatedAt())
-                .build()
+                BidCreatedEvent.builder()
+                        .bidId(savedBid.getId())
+                        .projectId(savedBid.getProjectId())
+                        .freelancerId(savedBid.getFreelancerId())
+                        .amount(savedBid.getAmount())
+                        .status(savedBid.getStatus())
+                        .createdAt(savedBid.getCreatedAt())
+                        .build()
         );
-        
+
         return bidMapper.toResponseDto(savedBid);
     }
 
@@ -83,24 +83,24 @@ public class BidService {
     public BidResponseDTO updateBidStatus(UUID bidId, BidStatus status) {
         log.info("Updating status of bid ID: {} to {}", bidId, status);
         Bid bid = bidRepository.findById(bidId)
-            .orElseThrow(() -> new EntityNotFoundException("Bid not found with ID: " + bidId));
-        
+                .orElseThrow(() -> new EntityNotFoundException("Bid not found with ID: " + bidId));
+
         BidStatus oldStatus = bid.getStatus();
         bid.setStatus(status);
         bid.setUpdatedAt(LocalDateTime.now());
         Bid updatedBid = bidRepository.save(bid);
-        
+
         kafkaProducer.sendBidStatusUpdatedEvent(
-            BidStatusUpdatedEvent.builder()
-                .bidId(updatedBid.getId())
-                .projectId(updatedBid.getProjectId())
-                .freelancerId(updatedBid.getFreelancerId())
-                .oldStatus(oldStatus)
-                .newStatus(status)
-                .updatedAt(updatedBid.getUpdatedAt())
-                .build()
+                BidStatusUpdatedEvent.builder()
+                        .bidId(updatedBid.getId())
+                        .projectId(updatedBid.getProjectId())
+                        .freelancerId(updatedBid.getFreelancerId())
+                        .oldStatus(oldStatus)
+                        .newStatus(status)
+                        .updatedAt(updatedBid.getUpdatedAt())
+                        .build()
         );
-        
+
         return bidMapper.toResponseDto(updatedBid);
     }
 
@@ -118,25 +118,25 @@ public class BidService {
     public void cancelBidsByFreelancer(UUID freelancerId) {
         log.info("Cancelling all bids for freelancer: {}", freelancerId);
         List<Bid> bids = bidRepository.findByFreelancerIdAndStatus(freelancerId, BidStatus.PENDING);
-        
+
         bids.forEach(bid -> {
             bid.setStatus(BidStatus.CANCELLED);
             bid.setUpdatedAt(LocalDateTime.now());
             Bid updatedBid = bidRepository.save(bid);
-            
+
             kafkaProducer.sendBidStatusUpdatedEvent(
-                BidStatusUpdatedEvent.builder()
-                    .bidId(updatedBid.getId())
-                    .projectId(updatedBid.getProjectId())
-                    .freelancerId(updatedBid.getFreelancerId())
-                    .oldStatus(BidStatus.PENDING)
-                    .newStatus(BidStatus.CANCELLED)
-                    .updatedAt(updatedBid.getUpdatedAt())
-                    .reason("Freelancer account deleted")
-                    .build()
+                    BidStatusUpdatedEvent.builder()
+                            .bidId(updatedBid.getId())
+                            .projectId(updatedBid.getProjectId())
+                            .freelancerId(updatedBid.getFreelancerId())
+                            .oldStatus(BidStatus.PENDING)
+                            .newStatus(BidStatus.CANCELLED)
+                            .updatedAt(updatedBid.getUpdatedAt())
+                            .reason("Freelancer account deleted")
+                            .build()
             );
         });
-        
+
         log.info("Cancelled {} bids for freelancer: {}", bids.size(), freelancerId);
     }
 

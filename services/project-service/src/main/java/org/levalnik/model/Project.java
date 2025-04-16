@@ -2,11 +2,12 @@ package org.levalnik.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.levalnik.model.enums.Status;
+import org.levalnik.enums.projectEnum.ProjectStatus;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Positive;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -51,7 +52,7 @@ public class Project {
     @Column(nullable = false)
     @NotNull
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private ProjectStatus status;
 
     @Column(nullable = false)
     @NotNull
@@ -62,7 +63,7 @@ public class Project {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
         bidCount = 0;
-        status = Status.OPEN;
+        status = ProjectStatus.OPEN;
     }
 
     @PreUpdate

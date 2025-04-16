@@ -2,7 +2,7 @@
 //
 //import org.levalnik.DTO.UserDTO;
 //import org.levalnik.model.User;
-//import org.levalnik.model.enums.Status;
+//import org.levalnik.enums.userEnum.Status;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;
 //

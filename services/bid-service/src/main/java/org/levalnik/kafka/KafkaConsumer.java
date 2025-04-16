@@ -2,10 +2,11 @@ package org.levalnik.kafka;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.levalnik.DTO.events.UserDeletedEvent;
 import org.levalnik.config.KafkaConfig;
+import org.levalnik.enums.userEnum.UserRole;
 import org.levalnik.exception.EntityNotFoundException;
 import org.levalnik.service.BidService;
+import org.levalnik.kafkaEvent.userKafkaEvent.*;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -20,17 +21,17 @@ import java.util.UUID;
 public class KafkaConsumer {
 
     private final BidService bidService;
-    
+
     @KafkaListener(topics = KafkaConfig.USER_DELETED_TOPIC, groupId = "${spring.kafka.consumer.group-id}")
     @Transactional
     public void handleUserDeleted(UserDeletedEvent event,
-                                @Header(KafkaHeaders.RECEIVED_PARTITION) Integer partition,
-                                @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
+                                  @Header(KafkaHeaders.RECEIVED_PARTITION) Integer partition,
+                                  @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
         try {
-            log.info("Received user deleted event from topic: {}, partition: {}, event: {}", 
+            log.info("Received user deleted event from topic: {}, partition: {}, event: {}",
                     topic, partition, event);
-            
-            if ("FREELANCER".equals(event.getUserType())) {
+
+            if (UserRole.Freelancer.equals(event.getUserRole())) {
                 bidService.cancelBidsByFreelancer(event.getUserId());
                 log.info("Successfully cancelled all bids for freelancer: {}", event.getUserId());
             }
@@ -42,16 +43,16 @@ public class KafkaConsumer {
             throw e;
         }
     }
-    
+
     @KafkaListener(topics = KafkaConfig.PROJECT_DELETED_TOPIC, groupId = "${spring.kafka.consumer.group-id}")
     @Transactional
     public void handleProjectDeleted(UUID projectId,
-                                   @Header(KafkaHeaders.RECEIVED_PARTITION) Integer partition,
-                                   @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
+                                     @Header(KafkaHeaders.RECEIVED_PARTITION) Integer partition,
+                                     @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
         try {
-            log.info("Received project deleted event from topic: {}, partition: {}, projectId: {}", 
+            log.info("Received project deleted event from topic: {}, partition: {}, projectId: {}",
                     topic, partition, projectId);
-            
+
             bidService.cancelBidsByProject(projectId);
             log.info("Successfully cancelled all bids for project: {}", projectId);
         } catch (EntityNotFoundException e) {

@@ -1,4 +1,4 @@
-package org.levalnik.DTO.events;
+package org.levalnik.kafkaEvent.projectKafkaEvent;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

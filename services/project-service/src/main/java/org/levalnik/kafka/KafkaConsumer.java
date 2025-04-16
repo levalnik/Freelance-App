@@ -2,12 +2,13 @@ package org.levalnik.kafka;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.levalnik.DTO.events.BidCreatedEvent;
-import org.levalnik.DTO.events.BidStatusUpdatedEvent;
-import org.levalnik.DTO.events.UserDeletedEvent;
+import org.levalnik.enums.bidEnum.BidStatus;
+import org.levalnik.enums.userEnum.UserRole;
+import org.levalnik.kafkaEvent.bidKafkaEvent.*;
+import org.levalnik.kafkaEvent.userKafkaEvent.*;
 import org.levalnik.config.KafkaConfig;
 import org.levalnik.exception.EntityNotFoundException;
-import org.levalnik.model.enums.Status;
+import org.levalnik.enums.projectEnum.ProjectStatus;
 import org.levalnik.service.ProjectService;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -54,9 +55,9 @@ public class KafkaConsumer {
             log.info("Received bid status updated event from topic: {}, partition: {}, event: {}",
                     topic, partition, event);
 
-            if ("ACCEPTED".equals(event.getNewStatus())) {
+            if (BidStatus.ACCEPTED.equals(event.getNewStatus())) {
                 log.info("Updating project status to IN_PROGRESS for project: {}", event.getProjectId());
-                projectService.updateStatus(event.getProjectId(), Status.IN_PROGRESS);
+                projectService.updateStatus(event.getProjectId(), ProjectStatus.IN_PROGRESS);
                 log.info("Successfully updated project status and sent update event for project: {}",
                         event.getProjectId());
             }
@@ -78,7 +79,7 @@ public class KafkaConsumer {
             log.info("Received user deleted event from topic: {}, partition: {}, event: {}",
                     topic, partition, event);
 
-            if ("CLIENT".equals(event.getUserType())) {
+            if (UserRole.Client.equals(event.getUserRole())) {
                 projectService.closeProjectsByClient(event.getUserId());
                 log.info("Successfully closed all projects for client: {}", event.getUserId());
             }

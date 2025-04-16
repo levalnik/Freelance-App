@@ -1,6 +1,6 @@
 package org.levalnik.model;
 
-import org.levalnik.model.enums.BidStatus;
+import org.levalnik.enums.bidEnum.BidStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +10,7 @@ import lombok.Builder;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;

@@ -3,7 +3,7 @@ package org.levalnik.mapper;
 import org.levalnik.DTO.BidRequestDTO;
 import org.levalnik.DTO.BidResponseDTO;
 import org.levalnik.model.Bid;
-import org.levalnik.model.enums.BidStatus;
+import org.levalnik.enums.bidEnum.BidStatus;
 import org.springframework.stereotype.Component;
 
 @Component

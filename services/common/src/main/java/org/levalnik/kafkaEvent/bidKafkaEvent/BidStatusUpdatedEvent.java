@@ -1,24 +1,23 @@
-package org.levalnik.DTO.events;
+package org.levalnik.kafkaEvent.bidKafkaEvent;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.levalnik.model.enums.Status;
-
-import java.time.LocalDateTime;
+import org.levalnik.enums.bidEnum.BidStatus;
 import java.util.UUID;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProjectUpdatedEvent {
+public class BidStatusUpdatedEvent {
+    private UUID bidId;
     private UUID projectId;
-    private String title;
-    private String description;
-    private Double budget;
-    private Status status;
+    private UUID freelancerId;
+    private BidStatus oldStatus;
+    private BidStatus newStatus;
     private LocalDateTime updatedAt;
     private String reason;
 } 

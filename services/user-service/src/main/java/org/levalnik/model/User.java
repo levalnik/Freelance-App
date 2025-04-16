@@ -1,8 +1,8 @@
 package org.levalnik.model;
 
-import org.levalnik.model.enums.Permission;
-import org.levalnik.model.enums.Role;
-import org.levalnik.model.enums.Status;
+import org.levalnik.enums.userEnum.UserPermission;
+import org.levalnik.enums.userEnum.UserRole;
+import org.levalnik.enums.userEnum.UserStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +13,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Email;
+
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -61,19 +62,19 @@ public class User {
     @Column(nullable = false)
     @NotNull
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private UserRole role;
 
     @Column(nullable = false)
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_permissions", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     @NotNull
-    private Set<Permission> permissions;
+    private Set<UserPermission> permissions;
 
     @Column(nullable = false)
     @NotNull
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private UserStatus status;
 
     @Column
     @PastOrPresent
@@ -99,7 +100,7 @@ public class User {
         registrationDate = LocalDateTime.now();
         projectCount = 0;
         bidCount = 0;
-        status = Status.ACTIVE;
+        status = UserStatus.ACTIVE;
     }
 
     @PreUpdate

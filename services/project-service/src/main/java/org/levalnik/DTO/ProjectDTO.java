@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
-import org.levalnik.model.enums.Status;
+import org.levalnik.enums.projectEnum.ProjectStatus;
 
 import java.util.UUID;
 
@@ -25,7 +25,7 @@ public class ProjectDTO {
     private Double budget;
 
     @NotNull
-    private Status status;
+    private ProjectStatus status;
 
     @NotNull(message = "Client ID is required")
     private UUID clientId;

@@ -1,10 +1,10 @@
-package org.levalnik.DTO.events;
+package org.levalnik.kafkaEvent.userKafkaEvent;
 
-import org.levalnik.model.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.levalnik.enums.userEnum.UserRole;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -13,8 +13,10 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDeletedEvent {
+public class UserCreatedEvent {
     private UUID userId;
-    private LocalDateTime deletedAt;
-    private Role userRole;
+    private String username;
+    private String email;
+    private UserRole userRole;
+    private LocalDateTime createdAt;
 } 

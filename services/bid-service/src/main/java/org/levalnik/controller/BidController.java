@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.levalnik.DTO.BidRequestDTO;
 import org.levalnik.DTO.BidResponseDTO;
-import org.levalnik.model.enums.BidStatus;
+import org.levalnik.enums.bidEnum.BidStatus;
 import org.levalnik.service.BidService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +23,7 @@ public class BidController {
 
     @PostMapping
     public ResponseEntity<BidResponseDTO> createBid(@Valid @RequestBody BidRequestDTO bidRequestDTO) {
-        log.info("Creating new bid for project ID: {}, freelancer ID: {}", 
+        log.info("Creating new bid for project ID: {}, freelancer ID: {}",
                 bidRequestDTO.getProjectId(), bidRequestDTO.getFreelancerId());
         return ResponseEntity.ok(bidService.createBid(bidRequestDTO));
     }

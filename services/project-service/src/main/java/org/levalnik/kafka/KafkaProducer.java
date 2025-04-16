@@ -2,9 +2,7 @@ package org.levalnik.kafka;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.levalnik.DTO.events.ProjectCreatedEvent;
-import org.levalnik.DTO.events.ProjectDeletedEvent;
-import org.levalnik.DTO.events.ProjectUpdatedEvent;
+import org.levalnik.kafkaEvent.projectKafkaEvent.*;
 import org.levalnik.config.KafkaConfig;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;

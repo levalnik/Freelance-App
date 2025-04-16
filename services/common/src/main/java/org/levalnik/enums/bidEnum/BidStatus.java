@@ -1,4 +1,4 @@
-package org.levalnik.model.enums;
+package org.levalnik.enums.bidEnum;
 
 public enum BidStatus {
     PENDING,
