@@ -1,6 +1,6 @@
-package org.levalnik.repository;
+package org.levalnik.user.repository;
 
-import org.levalnik.model.User;
+import org.levalnik.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

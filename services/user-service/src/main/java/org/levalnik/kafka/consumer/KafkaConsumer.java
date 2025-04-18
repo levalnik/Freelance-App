@@ -1,12 +1,12 @@
-package org.levalnik.kafka;
+package org.levalnik.kafka.consumer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.levalnik.kafkaEvent.bidKafkaEvent.BidCreatedEvent;
 import org.levalnik.kafkaEvent.projectKafkaEvent.ProjectCreatedEvent;
-import org.levalnik.config.KafkaConfig;
+import org.levalnik.kafka.config.KafkaConfig;
 import org.levalnik.exception.EntityNotFoundException;
-import org.levalnik.service.UserService;
+import org.levalnik.user.service.UserService;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;

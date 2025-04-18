@@ -1,4 +1,4 @@
-package org.levalnik.DTO;
+package org.levalnik.user.DTO;
 
 import org.levalnik.enums.userEnum.UserPermission;
 import org.levalnik.enums.userEnum.UserRole;

@@ -1,10 +1,10 @@
-package org.levalnik.controller;
+package org.levalnik.user.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.levalnik.DTO.UserDTO;
-import org.levalnik.service.UserService;
+import org.levalnik.user.DTO.UserDTO;
+import org.levalnik.user.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;

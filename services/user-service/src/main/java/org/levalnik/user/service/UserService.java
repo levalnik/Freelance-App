@@ -1,16 +1,20 @@
-package org.levalnik.service;
+package org.levalnik.user.service;
 
-import org.levalnik.kafka.KafkaProducer;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.levalnik.kafka.producer.KafkaProducer;
 import org.levalnik.kafkaEvent.userKafkaEvent.UserCreatedEvent;
 import org.levalnik.kafkaEvent.userKafkaEvent.UserDeletedEvent;
 import org.levalnik.kafkaEvent.userKafkaEvent.UserUpdatedEvent;
-import org.levalnik.mapper.UserMapper;
+import org.levalnik.outbox.model.OutboxEvent;
+import org.levalnik.outbox.repository.OutboxEventRepository;
+import org.levalnik.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.levalnik.DTO.UserDTO;
+import org.levalnik.user.DTO.UserDTO;
 import org.levalnik.exception.EntityNotFoundException;
-import org.levalnik.model.User;
-import org.levalnik.repository.UserRepository;
+import org.levalnik.user.model.User;
+import org.levalnik.user.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,7 +32,8 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final KafkaProducer kafkaProducer;
+    private final OutboxEventRepository outboxEventRepository;
+    private final ObjectMapper objectMapper;
 
     @Transactional(readOnly = true)
     public Optional<UserDTO> findByUsername(String username) {
@@ -66,18 +71,36 @@ public class UserService {
         if (existsByUsername(userDTO.getUsername()) || existsByEmail(userDTO.getEmail())) {
             throw new IllegalArgumentException("Username or email already exists");
         }
+
         User user = userMapper.toEntity(userDTO);
         User savedUser = userRepository.save(user);
-        log.info("Saved new user with ID: {}", savedUser.getId());
 
-        kafkaProducer.sendUserCreatedEvent(
-                UserCreatedEvent.builder()
-                        .userId(savedUser.getId())
-                        .username(savedUser.getUsername())
-                        .userRole(savedUser.getRole())
-                        .createdAt(LocalDateTime.now())
-                        .build()
-        );
+        String payload;
+        try {
+            payload = objectMapper.writeValueAsString(
+                    UserCreatedEvent.builder()
+                            .userId(savedUser.getId())
+                            .username(savedUser.getUsername())
+                            .email(savedUser.getEmail())
+                            .userRole(savedUser.getRole())
+                            .createdAt(LocalDateTime.now())
+                            .build()
+            );
+        } catch (JsonProcessingException e) {
+            log.error("Failed to serialize UserCreatedEvent for user ID: {}", savedUser.getId(), e);
+            throw new RuntimeException("Failed to serialize event payload", e);
+        }
+
+        OutboxEvent event = OutboxEvent.builder()
+                .aggregateType("User")
+                .aggregateId(savedUser.getId().toString())
+                .eventType("UserCreatedEvent")
+                .payload(payload)
+                .createdAt(LocalDateTime.now())
+                .build();
+        outboxEventRepository.save(event);
+
+        log.info("Saved new user with ID: {}", savedUser.getId());
 
         return userMapper.toDTO(savedUser);
     }
@@ -94,17 +117,33 @@ public class UserService {
         user.setRole(userDTO.getRole());
 
         User updatedUser = userRepository.save(user);
+
+        UserUpdatedEvent eventPayload = UserUpdatedEvent.builder()
+                .userId(updatedUser.getId())
+                .username(updatedUser.getUsername())
+                .email(updatedUser.getEmail())
+                .userRole(updatedUser.getRole())
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        try {
+            String payload = objectMapper.writeValueAsString(eventPayload);
+
+            OutboxEvent event = OutboxEvent.builder()
+                    .aggregateType("User")
+                    .aggregateId(updatedUser.getId().toString())
+                    .eventType("UserUpdatedEvent")
+                    .payload(payload)
+                    .createdAt(LocalDateTime.now())
+                    .build();
+
+            outboxEventRepository.save(event);
+        } catch (JsonProcessingException e) {
+            log.error("Failed to serialize UserUpdatedEvent for user ID: {}", updatedUser.getId(), e);
+            throw new RuntimeException("Failed to serialize event payload", e);
+        }
+
         log.info("Updated user with ID: {}", updatedUser.getId());
-
-        kafkaProducer.sendUserUpdatedEvent(
-                UserUpdatedEvent.builder()
-                        .userId(updatedUser.getId())
-                        .username(updatedUser.getUsername())
-                        .userRole(updatedUser.getRole())
-                        .updatedAt(LocalDateTime.now())
-                        .build()
-        );
-
         return userMapper.toDTO(updatedUser);
     }
 
@@ -113,13 +152,28 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + id));
 
-        kafkaProducer.sendUserDeletedEvent(
-                UserDeletedEvent.builder()
-                        .userId(id)
-                        .userRole(user.getRole())
-                        .deletedAt(LocalDateTime.now())
-                        .build()
-        );
+        UserDeletedEvent eventPayload = UserDeletedEvent.builder()
+                .userId(id)
+                .userRole(user.getRole())
+                .deletedAt(LocalDateTime.now())
+                .build();
+
+        try {
+            String payload = objectMapper.writeValueAsString(eventPayload);
+
+            OutboxEvent event = OutboxEvent.builder()
+                    .aggregateType("User")
+                    .aggregateId(user.getId().toString())
+                    .eventType("UserDeletedEvent")
+                    .payload(payload)
+                    .createdAt(LocalDateTime.now())
+                    .build();
+
+            outboxEventRepository.save(event);
+        } catch (JsonProcessingException e) {
+            log.error("Failed to serialize UserDeletedEvent for user ID: {}", id, e);
+            throw new RuntimeException("Failed to serialize event payload", e);
+        }
 
         userRepository.deleteById(id);
         log.info("Deleted user with ID: {}", id);

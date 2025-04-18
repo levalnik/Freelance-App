@@ -1,11 +1,11 @@
-package org.levalnik.kafka;
+package org.levalnik.kafka.producer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.levalnik.kafkaEvent.userKafkaEvent.UserCreatedEvent;
 import org.levalnik.kafkaEvent.userKafkaEvent.UserDeletedEvent;
 import org.levalnik.kafkaEvent.userKafkaEvent.UserUpdatedEvent;
-import org.levalnik.config.KafkaConfig;
+import org.levalnik.kafka.config.KafkaConfig;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -30,4 +30,4 @@ public class KafkaProducer {
         log.info("Sending user deleted event: {}", event);
         kafkaTemplate.send(KafkaConfig.USER_DELETED_TOPIC, event.getUserId().toString(), event);
     }
-} 
+}

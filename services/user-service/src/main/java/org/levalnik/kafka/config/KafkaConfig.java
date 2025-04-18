@@ -1,4 +1,4 @@
-package org.levalnik.config;
+package org.levalnik.kafka.config;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;

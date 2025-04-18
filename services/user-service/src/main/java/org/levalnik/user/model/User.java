@@ -1,4 +1,4 @@
-package org.levalnik.model;
+package org.levalnik.user.model;
 
 import org.levalnik.enums.userEnum.UserPermission;
 import org.levalnik.enums.userEnum.UserRole;
