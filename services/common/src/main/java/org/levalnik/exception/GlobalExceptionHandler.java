@@ -43,17 +43,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, String>> handleGenericException(Exception ex) {
-        log.error("Unexpected error: {}", ex.getMessage(), ex);
-        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error");
-    }
-
-    @ExceptionHandler(JsonProcessingException.class)
-    public ResponseEntity<Map<String, String>> handleJsonProcessingException(JsonProcessingException ex) {
-        log.error("Json processing error: {}", ex.getMessage());
-        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<Map<String, String>> handleGenericException(Exception ex) {
+//        log.error("Unexpected error: {}", ex.getMessage(), ex);
+//        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error");
+//    }
 
     private ResponseEntity<Map<String, String>> buildResponse(HttpStatus status, String message) {
         Map<String, String> response = new HashMap<>();

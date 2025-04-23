@@ -1,4 +1,4 @@
-package org.levalnik.model;
+package org.levalnik.project.model;
 
 import jakarta.persistence.*;
 import lombok.*;

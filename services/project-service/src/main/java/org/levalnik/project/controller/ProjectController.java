@@ -1,11 +1,11 @@
-package org.levalnik.controller;
+package org.levalnik.project.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.levalnik.DTO.ProjectDTO;
+import org.levalnik.project.DTO.ProjectDTO;
 import org.levalnik.enums.projectEnum.ProjectStatus;
-import org.levalnik.model.Project;
-import org.levalnik.service.ProjectService;
+import org.levalnik.project.model.Project;
+import org.levalnik.project.service.ProjectService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -49,15 +49,15 @@ public class ProjectController {
     }
 
     @PostMapping
-    public ResponseEntity<Project> createProject(@RequestBody Project project) {
+    public ResponseEntity<ProjectDTO> createProject(@RequestBody ProjectDTO projectDTO) {
         log.info("Creating new project");
-        return ResponseEntity.ok(projectService.createProject(project));
+        return ResponseEntity.ok(projectService.createProject(projectDTO));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Project> updateProject(@PathVariable UUID id, @RequestBody Project project) {
+    public ResponseEntity<ProjectDTO> updateProject(@PathVariable UUID id, @RequestBody ProjectDTO projectDTO) {
         log.info("Updating project with ID: {}", id);
-        return ResponseEntity.ok(projectService.updateProject(id, project));
+        return ResponseEntity.ok(projectService.updateProject(id, projectDTO));
     }
 
     @DeleteMapping("/{id}")

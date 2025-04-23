@@ -2,7 +2,6 @@ package org.levalnik.user.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.levalnik.kafka.producer.KafkaProducer;
 import org.levalnik.kafkaEvent.userKafkaEvent.UserCreatedEvent;
 import org.levalnik.kafkaEvent.userKafkaEvent.UserDeletedEvent;
 import org.levalnik.kafkaEvent.userKafkaEvent.UserUpdatedEvent;
@@ -67,7 +66,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO save(UserDTO userDTO) {
+    public UserDTO createUser(UserDTO userDTO) {
         if (existsByUsername(userDTO.getUsername()) || existsByEmail(userDTO.getEmail())) {
             throw new IllegalArgumentException("Username or email already exists");
         }

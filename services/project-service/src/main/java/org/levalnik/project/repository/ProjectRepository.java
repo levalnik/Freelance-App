@@ -1,7 +1,7 @@
-package org.levalnik.repository;
+package org.levalnik.project.repository;
 
 import org.levalnik.enums.projectEnum.ProjectStatus;
-import org.levalnik.model.Project;
+import org.levalnik.project.model.Project;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package org.levalnik.DTO;
+package org.levalnik.project.DTO;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

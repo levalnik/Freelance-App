@@ -3,11 +3,11 @@ package org.levalnik.outbox.publisher;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.levalnik.kafkaEvent.userKafkaEvent.UserDeletedEvent;
+import org.levalnik.kafkaEvent.projectKafkaEvent.ProjectCreatedEvent;
+import org.levalnik.kafkaEvent.projectKafkaEvent.ProjectDeletedEvent;
+import org.levalnik.kafkaEvent.projectKafkaEvent.ProjectUpdatedEvent;
 import org.levalnik.outbox.repository.OutboxEventRepository;
 import org.levalnik.kafka.producer.KafkaProducer;
-import org.levalnik.kafkaEvent.userKafkaEvent.UserCreatedEvent;
-import org.levalnik.kafkaEvent.userKafkaEvent.UserUpdatedEvent;
 import org.levalnik.outbox.model.OutboxEvent;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -26,12 +26,12 @@ public class OutboxEventPublisher {
     @Scheduled(fixedDelay = 5000)
     public void publishCreatedEvents() {
         List<OutboxEvent> events = outboxEventRepository
-                .findTop100ByProcessedFalseAndEventTypeOrderByCreatedAtAsc("UserCreatedEvent");
+                .findTop100ByProcessedFalseAndEventTypeOrderByCreatedAtAsc("ProjectCreatedEvent");
 
         for (OutboxEvent event : events) {
             try {
-                UserCreatedEvent createdEvent = objectMapper.readValue(event.getPayload(), UserCreatedEvent.class);
-                kafkaProducer.sendUserCreatedEvent(createdEvent);
+                ProjectCreatedEvent createdEvent = objectMapper.readValue(event.getPayload(), ProjectCreatedEvent.class);
+                kafkaProducer.sendProjectCreatedEvent(createdEvent);
                 event.setProcessed(true);
                 outboxEventRepository.save(event);
                 log.info("Published outbox event [id={}, type={}]", event.getId(), event.getEventType());
@@ -44,12 +44,12 @@ public class OutboxEventPublisher {
     @Scheduled(fixedDelay = 5000)
     public void publishUpdatedEvents() {
         List<OutboxEvent> events = outboxEventRepository
-                .findTop100ByProcessedFalseAndEventTypeOrderByCreatedAtAsc("UserUpdatedEvent");
+                .findTop100ByProcessedFalseAndEventTypeOrderByCreatedAtAsc("ProjectUpdatedEvent");
 
         for (OutboxEvent event : events) {
             try {
-                UserUpdatedEvent updatedEvent = objectMapper.readValue(event.getPayload(), UserUpdatedEvent.class);
-                kafkaProducer.sendUserUpdatedEvent(updatedEvent);
+                ProjectUpdatedEvent updatedEvent = objectMapper.readValue(event.getPayload(), ProjectUpdatedEvent.class);
+                kafkaProducer.sendProjectUpdatedEvent(updatedEvent);
                 event.setProcessed(true);
                 outboxEventRepository.save(event);
                 log.info("Published outbox event [id={}, type={}]", event.getId(), event.getEventType());
@@ -62,12 +62,12 @@ public class OutboxEventPublisher {
     @Scheduled(fixedDelay = 5000)
     public void publishDeletedEvents() {
         List<OutboxEvent> events = outboxEventRepository
-                .findTop100ByProcessedFalseAndEventTypeOrderByCreatedAtAsc("UserDeletedEvent");
+                .findTop100ByProcessedFalseAndEventTypeOrderByCreatedAtAsc("ProjectDeletedEvent");
 
         for (OutboxEvent event : events) {
             try {
-                UserDeletedEvent deletedEvent = objectMapper.readValue(event.getPayload(), UserDeletedEvent.class);
-                kafkaProducer.sendUserDeletedEvent(deletedEvent);
+                ProjectDeletedEvent deletedEvent = objectMapper.readValue(event.getPayload(), ProjectDeletedEvent.class);
+                kafkaProducer.sendProjectDeletedEvent(deletedEvent);
                 event.setProcessed(true);
                 outboxEventRepository.save(event);
                 log.info("Published outbox event [id={}, type={}]", event.getId(), event.getEventType());

@@ -1,7 +1,7 @@
-package org.levalnik.mapper;
+package org.levalnik.project.mapper;
 
-import org.levalnik.DTO.ProjectDTO;
-import org.levalnik.model.Project;
+import org.levalnik.project.DTO.ProjectDTO;
+import org.levalnik.project.model.Project;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
