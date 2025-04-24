@@ -1,12 +1,12 @@
-package org.levalnik.controller;
+package org.levalnik.bid.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.levalnik.DTO.BidRequestDTO;
-import org.levalnik.DTO.BidResponseDTO;
+import org.levalnik.bid.DTO.BidRequestDTO;
+import org.levalnik.bid.DTO.BidResponseDTO;
 import org.levalnik.enums.bidEnum.BidStatus;
-import org.levalnik.service.BidService;
+import org.levalnik.bid.service.BidService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

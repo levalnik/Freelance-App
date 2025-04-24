@@ -1,4 +1,4 @@
-package org.levalnik.model;
+package org.levalnik.bid.model;
 
 import org.levalnik.enums.bidEnum.BidStatus;
 import jakarta.persistence.*;

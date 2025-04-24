@@ -1,4 +1,4 @@
-package org.levalnik.config;
+package org.levalnik.kafka.config;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +10,8 @@ public class KafkaConfig {
 
     public static final String BID_CREATED_TOPIC = "bid-created";
     public static final String BID_STATUS_UPDATED_TOPIC = "bid-status-updated";
+
+    public static final String BID_DELETED_TOPIC = "bid-deleted";
     public static final String PROJECT_DELETED_TOPIC = "project-deleted";
     public static final String USER_DELETED_TOPIC = "user-deleted";
 

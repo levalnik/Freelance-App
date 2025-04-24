@@ -2,6 +2,7 @@ package org.levalnik.user.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.kafka.common.protocol.types.Field;
 import org.levalnik.kafkaEvent.userKafkaEvent.UserCreatedEvent;
 import org.levalnik.kafkaEvent.userKafkaEvent.UserDeletedEvent;
 import org.levalnik.kafkaEvent.userKafkaEvent.UserUpdatedEvent;

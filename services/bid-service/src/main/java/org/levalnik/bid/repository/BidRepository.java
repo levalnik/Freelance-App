@@ -1,7 +1,7 @@
-package org.levalnik.repository;
+package org.levalnik.bid.repository;
 
 import org.levalnik.enums.bidEnum.BidStatus;
-import org.levalnik.model.Bid;
+import org.levalnik.bid.model.Bid;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
