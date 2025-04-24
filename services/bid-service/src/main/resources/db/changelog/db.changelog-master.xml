@@ -6,4 +6,5 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <include file="db/changelog/001-create-bid-table.xml"/>
+    <include file="db/changelog/002-create-bid-outbox-table.xml"/>
 </databaseChangeLog>

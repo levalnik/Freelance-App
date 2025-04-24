@@ -1,0 +1,1 @@
+ALTER TABLE IF EXISTS user_permissions RENAME COLUMN permission TO permissions

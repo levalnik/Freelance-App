@@ -6,4 +6,5 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <include file="db/changelog/changelog-001-init.xml"/>
+    <include file="db/changelog/changelog-002-init-project-outbox-event.xml"/>
 </databaseChangeLog>
