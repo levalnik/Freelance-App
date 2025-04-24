@@ -31,7 +31,7 @@ public class KafkaConsumer {
             log.info("Received user deleted event from topic: {}, partition: {}, event: {}",
                     topic, partition, event);
 
-            if (UserRole.Freelancer.equals(event.getUserRole())) {
+            if (UserRole.FREELANCER.equals(event.getUserRole())) {
                 bidService.cancelBidsByFreelancer(event.getUserId());
                 log.info("Successfully cancelled all bids for freelancer: {}", event.getUserId());
             }

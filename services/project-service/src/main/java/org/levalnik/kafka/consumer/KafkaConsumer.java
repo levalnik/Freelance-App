@@ -79,7 +79,7 @@ public class KafkaConsumer {
             log.info("Received user deleted event from topic: {}, partition: {}, event: {}",
                     topic, partition, event);
 
-            if (UserRole.Client.equals(event.getUserRole())) {
+            if (UserRole.CLIENT.equals(event.getUserRole())) {
                 projectService.closeProjectsByClient(event.getUserId());
                 log.info("Successfully closed all projects for client: {}", event.getUserId());
             }

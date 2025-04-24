@@ -1,5 +1,8 @@
 package org.levalnik.user.DTO;
 
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import org.levalnik.enums.userEnum.UserPermission;
 import org.levalnik.enums.userEnum.UserRole;
 import org.levalnik.enums.userEnum.UserStatus;
@@ -20,6 +23,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UserDTO {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @NotBlank
@@ -49,13 +54,13 @@ public class UserDTO {
     @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,}$", message = "Password must contain at least one uppercase letter, one lowercase letter, and one digit")
     private String password;
 
-    @NotBlank
+    @NotNull
     private UserRole role;
 
-    @NotBlank
+    @NotNull
     private Set<UserPermission> permissions;
 
-    @NotBlank
+    @NotNull
     private UserStatus status;
 
     @PastOrPresent

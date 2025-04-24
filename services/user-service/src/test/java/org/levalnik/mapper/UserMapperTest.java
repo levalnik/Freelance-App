@@ -1,8 +1,9 @@
 //package org.levalnik.mapper;
 //
-//import org.levalnik.DTO.UserDTO;
-//import org.levalnik.model.User;
-//import org.levalnik.enums.userEnum.Status;
+//import org.levalnik.enums.userEnum.UserStatus;
+//import org.levalnik.user.DTO.UserDTO;
+//import org.levalnik.user.mapper.UserMapper;
+//import org.levalnik.user.model.User;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;
 //
@@ -25,7 +26,7 @@
 //        user.setEmail("leva_kuimov@example.com");
 //        user.setFirstName("leva");
 //        user.setLastName("kuimov");
-//        user.setStatus(Status.ACTIVE);
+//        user.setStatus(UserStatus.ACTIVE);
 //
 //        userDTO = new UserDTO();
 //        userDTO.setId(UUID.randomUUID());
@@ -33,7 +34,7 @@
 //        userDTO.setEmail("leva_kuimov@example.com");
 //        userDTO.setFirstName("leva");
 //        userDTO.setLastName("kuimov");
-//        userDTO.setStatus(Status.ACTIVE);
+//        userDTO.setStatus(UserStatus.ACTIVE);
 //    }
 //
 //    @Test
