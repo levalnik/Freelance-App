@@ -1,0 +1,19 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: security-service
+
+service:
+  user-service:
+    url: http://localhost:8080/users
+
+jwt:
+  secret: 0KHQm9Cr0Kgg0KLQqyDQo9CV0JHQntCaINCV0JHQkNCd0J3Qq9CZLCDQn9Ce0KjQldCbINCd0JDQpdCj0Jkg0J7QotCh0K7QlNCQINCn0JzQniDQldCR0JDQndCd0J7QldGO
+  expirationMillis: 3600000 # 1 hour
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web.reactive.function.client.ExchangeFunctions: DEBUG

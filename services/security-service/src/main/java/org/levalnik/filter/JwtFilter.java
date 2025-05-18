@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class JwtFilter extends OncePerRequestFilter {
 
-    public static final String AUTHORIZATION = "Authorization";
+    private static final String AUTHORIZATION = "Authorization";
 
     private final JwtHelper jwtHelper;
 
