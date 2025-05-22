@@ -78,4 +78,10 @@ public class UserController {
         userService.updateBidCount(id);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String authHeader) {
+        log.info("User logged out with token {}", authHeader);
+        return ResponseEntity.ok().build();
+    }
 }

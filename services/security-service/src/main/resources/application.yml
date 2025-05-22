@@ -9,6 +9,10 @@ spring:
       write-dates-as-timestamps: false
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: UTC
+  data:
+    redis:
+      host: redis
+      port: 6379
 
 service:
   user-service:

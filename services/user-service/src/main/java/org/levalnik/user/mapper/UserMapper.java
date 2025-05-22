@@ -1,6 +1,5 @@
 package org.levalnik.user.mapper;
 
-import org.levalnik.dto.userDto.UserLoginRequest;
 import org.levalnik.dto.userDto.UserRegisterRequest;
 import org.levalnik.dto.userDto.UserResponse;
 import org.levalnik.user.model.User;

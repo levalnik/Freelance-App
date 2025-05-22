@@ -1,4 +1,4 @@
-package org.levalnik.detailService;
+package org.levalnik.service;
 
 import lombok.RequiredArgsConstructor;
 import org.levalnik.client.UserClient;

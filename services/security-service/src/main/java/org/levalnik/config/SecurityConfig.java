@@ -1,7 +1,7 @@
 package org.levalnik.config;
 
 import lombok.RequiredArgsConstructor;
-import org.levalnik.detailService.AuthDetailService;
+import org.levalnik.service.AuthDetailService;
 import org.levalnik.filter.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

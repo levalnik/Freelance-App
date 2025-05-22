@@ -28,8 +28,8 @@ public class SecurityController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
-        String message = securityService.logout(token);
-        return ResponseEntity.ok(message);
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") String authHeader) {
+        String result = securityService.logout(authHeader);
+        return ResponseEntity.ok(result);
     }
 }

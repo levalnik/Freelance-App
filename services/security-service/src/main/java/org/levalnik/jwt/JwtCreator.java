@@ -21,7 +21,7 @@ public class JwtCreator {
     private static Key hmacKey;
 
     public JwtCreator(JwtProperties jwtProperties) {
-        this.jwtProperties = jwtProperties;
+        JwtCreator.jwtProperties = jwtProperties;
     }
     @PostConstruct
     protected void init() {
