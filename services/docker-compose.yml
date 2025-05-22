@@ -1,6 +1,20 @@
 version: '3.8'
 
 services:
+  security-service:
+    build: ./security-service
+    container_name: security-service
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVICE_USER_SERVICE_URL: http://user-service:8080
+    depends_on:
+      user-service:
+        condition: service_started
+    networks:
+      - backend
+
   user-service:
     build: ./user-service
     container_name: user-service

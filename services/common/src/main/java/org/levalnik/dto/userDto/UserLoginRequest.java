@@ -1,4 +1,4 @@
-package org.levalnik.dto.user;
+package org.levalnik.dto.userDto;
 
 import lombok.Data;
 

@@ -2,7 +2,8 @@ package org.levalnik.project.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.levalnik.project.DTO.ProjectDTO;
+import org.levalnik.dto.projectDto.ProjectRequest;
+import org.levalnik.dto.projectDto.ProjectResponse;
 import org.levalnik.enums.projectEnum.ProjectStatus;
 import org.levalnik.project.model.Project;
 import org.levalnik.project.service.ProjectService;
@@ -23,7 +24,7 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @GetMapping("/status/{status}")
-    public ResponseEntity<Page<ProjectDTO>> getProjectsByStatus(@PathVariable ProjectStatus status, Pageable pageable) {
+    public ResponseEntity<Page<ProjectResponse>> getProjectsByStatus(@PathVariable ProjectStatus status, Pageable pageable) {
         log.info("Fetching projects with status: {}", status);
         return ResponseEntity.ok(projectService.getProjectsByStatus(status, pageable));
     }
@@ -49,13 +50,13 @@ public class ProjectController {
     }
 
     @PostMapping
-    public ResponseEntity<ProjectDTO> createProject(@RequestBody ProjectDTO projectDTO) {
+    public ResponseEntity<ProjectResponse> createProject(@RequestBody ProjectRequest projectDTO) {
         log.info("Creating new project");
         return ResponseEntity.ok(projectService.createProject(projectDTO));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProjectDTO> updateProject(@PathVariable UUID id, @RequestBody ProjectDTO projectDTO) {
+    public ResponseEntity<ProjectResponse> updateProject(@PathVariable UUID id, @RequestBody ProjectRequest projectDTO) {
         log.info("Updating project with ID: {}", id);
         return ResponseEntity.ok(projectService.updateProject(id, projectDTO));
     }

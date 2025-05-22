@@ -1,4 +1,4 @@
-package org.levalnik.bid.DTO;
+package org.levalnik.dto.bidDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

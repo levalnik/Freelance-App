@@ -1,4 +1,4 @@
-package org.levalnik.dto.auth;
+package org.levalnik.dto.authDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

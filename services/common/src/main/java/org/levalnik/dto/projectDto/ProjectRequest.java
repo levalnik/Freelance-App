@@ -1,4 +1,4 @@
-package org.levalnik.project.DTO;
+package org.levalnik.dto.projectDto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Data
 @Builder
-public class ProjectDTO {
+public class ProjectRequest {
 
     private UUID id;
 

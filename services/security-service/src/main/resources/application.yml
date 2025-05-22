@@ -4,16 +4,31 @@ server:
 spring:
   application:
     name: security-service
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: UTC
 
 service:
   user-service:
-    url: http://localhost:8080/users
+    url: ${SERVICE_USER_SERVICE_URL:http://localhost:8080}
 
 jwt:
-  secret: 0KHQm9Cr0Kgg0KLQqyDQo9CV0JHQntCaINCV0JHQkNCd0J3Qq9CZLCDQn9Ce0KjQldCbINCd0JDQpdCj0Jkg0J7QotCh0K7QlNCQINCn0JzQniDQldCR0JDQndCd0J7QldGO
-  expirationMillis: 3600000 # 1 hour
+  secret: ${JWT_SECRET:jMZfY8JLznGm7Yc37p3P3mR20zuwcdxPX6vOcBfD9PM=}
+  expirationMillis: ${JWT_EXPIRATION:3600000} # 1 hour
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
 
 logging:
   level:
     root: INFO
     org.springframework.web.reactive.function.client.ExchangeFunctions: DEBUG
+    org.levalnik: DEBUG

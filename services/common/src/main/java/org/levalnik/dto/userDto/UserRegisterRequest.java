@@ -1,4 +1,4 @@
-package org.levalnik.dto.user;
+package org.levalnik.dto.userDto;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
@@ -7,7 +7,6 @@ import org.levalnik.enums.userEnum.UserRole;
 import org.levalnik.enums.userEnum.UserStatus;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 @Data

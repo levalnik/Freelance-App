@@ -2,10 +2,9 @@ package org.levalnik.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
-import org.levalnik.dto.user.UserLoginRequest;
-import org.levalnik.dto.user.UserRegisterRequest;
-import org.levalnik.dto.user.UserResponse;
+import org.levalnik.dto.userDto.UserLoginRequest;
+import org.levalnik.dto.userDto.UserRegisterRequest;
+import org.levalnik.dto.userDto.UserResponse;
 import org.levalnik.service.SecurityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class SecurityController {
     private final SecurityService securityService;
 
-    @PostMapping("/login")
+    @GetMapping("/login")
     public ResponseEntity<UserResponse> login(@Valid @RequestBody UserLoginRequest userLoginRequest) {
         UserResponse response = securityService.loginUser(userLoginRequest);
         return ResponseEntity.ok(response);

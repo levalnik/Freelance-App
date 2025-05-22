@@ -2,9 +2,9 @@ package org.levalnik.service;
 
 import lombok.RequiredArgsConstructor;
 import org.levalnik.client.UserClient;
-import org.levalnik.dto.user.UserLoginRequest;
-import org.levalnik.dto.user.UserRegisterRequest;
-import org.levalnik.dto.user.UserResponse;
+import org.levalnik.dto.userDto.UserLoginRequest;
+import org.levalnik.dto.userDto.UserRegisterRequest;
+import org.levalnik.dto.userDto.UserResponse;
 import org.levalnik.jwt.JwtCreator;
 import org.springframework.stereotype.Service;
 

@@ -2,7 +2,7 @@ package org.levalnik.detailService;
 
 import lombok.RequiredArgsConstructor;
 import org.levalnik.client.UserClient;
-import org.levalnik.dto.user.UserResponse;
+import org.levalnik.dto.userDto.UserResponse;
 import org.levalnik.enums.userEnum.UserRole;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;

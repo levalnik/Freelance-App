@@ -20,21 +20,21 @@ public class JwtCreator {
     private static JwtProperties jwtProperties;
     private static Key hmacKey;
 
-    public JwtCreator() {
-        jwtProperties = new JwtProperties();
-        init();
+    public JwtCreator(JwtProperties jwtProperties) {
+        this.jwtProperties = jwtProperties;
     }
     @PostConstruct
     protected void init() {
-        hmacKey = new SecretKeySpec(Base64.getDecoder().decode(jwtProperties.getSecret()), "HmacSHA256");
-    }
+        String secret = jwtProperties.getSecret();
+        byte[] decodedKey = Base64.getDecoder().decode(secret);
+        hmacKey = new SecretKeySpec(decodedKey, "HmacSHA256");    }
 
     public static String createToken(UUID userId, List<UserRole> roles) {
         return Jwts.builder()
                 .claim("userId", userId)
                 .claim("roles", roles)
                 .issuedAt(Date.from(Instant.now()))
-                .expiration(Date.from(Instant.now().plusMillis(jwtProperties.getValidityMs())))
+                .expiration(Date.from(Instant.now().plusMillis(jwtProperties.getExpirationMillis())))
                 .signWith(hmacKey)
                 .compact();
     }

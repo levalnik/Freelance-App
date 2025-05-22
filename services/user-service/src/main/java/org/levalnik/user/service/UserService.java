@@ -2,6 +2,8 @@ package org.levalnik.user.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.levalnik.dto.userDto.UserRegisterRequest;
+import org.levalnik.dto.userDto.UserResponse;
 import org.levalnik.kafkaEvent.userKafkaEvent.UserCreatedEvent;
 import org.levalnik.kafkaEvent.userKafkaEvent.UserDeletedEvent;
 import org.levalnik.kafkaEvent.userKafkaEvent.UserUpdatedEvent;
@@ -10,7 +12,6 @@ import org.levalnik.outbox.repository.OutboxEventRepository;
 import org.levalnik.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.levalnik.user.DTO.UserDTO;
 import org.levalnik.exception.EntityNotFoundException;
 import org.levalnik.user.model.User;
 import org.levalnik.user.repository.UserRepository;
@@ -35,14 +36,14 @@ public class UserService {
     private final ObjectMapper objectMapper;
 
     @Transactional(readOnly = true)
-    public Optional<UserDTO> findByUsername(String username) {
+    public Optional<UserResponse> findByUsername(String username) {
         log.info("Searching for user with username: {}", username);
         return userRepository.findByUsername(username)
                 .map(userMapper::toDTO);
     }
 
     @Transactional(readOnly = true)
-    public Optional<UserDTO> findByEmail(String email) {
+    public Optional<UserResponse> findByEmail(String email) {
         log.info("Searching for user with email: {}", email);
         return userRepository.findByEmail(email)
                 .map(userMapper::toDTO);
@@ -59,14 +60,14 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Page<UserDTO> findAll(Pageable pageable) {
+    public Page<UserResponse> findAll(Pageable pageable) {
         log.info("Fetching all users with pagination");
         return userRepository.findAll(pageable)
                 .map(userMapper::toDTO);
     }
 
     @Transactional
-    public UserDTO createUser(UserDTO userDTO) {
+    public UserResponse createUser(UserRegisterRequest userDTO) {
         if (existsByUsername(userDTO.getUsername()) || existsByEmail(userDTO.getEmail())) {
             throw new IllegalArgumentException("Username or email already exists");
         }
@@ -105,7 +106,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO updateUser(UUID id, UserDTO userDTO) {
+    public UserResponse updateUser(UUID id, UserRegisterRequest userDTO) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + id));
 
