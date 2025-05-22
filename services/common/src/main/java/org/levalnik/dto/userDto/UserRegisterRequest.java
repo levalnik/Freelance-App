@@ -1,31 +1,16 @@
-package org.levalnik.user.DTO;
+package org.levalnik.dto.userDto;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.validation.constraints.*;
+import lombok.Data;
 import org.levalnik.enums.userEnum.UserPermission;
 import org.levalnik.enums.userEnum.UserRole;
 import org.levalnik.enums.userEnum.UserStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
 import java.util.Set;
-import java.util.UUID;
 
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class UserDTO {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+public class UserRegisterRequest {
 
     @NotBlank
     @Size(min = 3, max = 50)
@@ -65,8 +50,4 @@ public class UserDTO {
 
     @PastOrPresent
     private LocalDateTime dateOfBirth;
-
-    private LocalDateTime registrationDate;
-
-    private LocalDateTime lastLoginDate;
 }

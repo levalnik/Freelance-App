@@ -1,0 +1,38 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: security-service
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: UTC
+  data:
+    redis:
+      host: redis
+      port: 6379
+
+service:
+  user-service:
+    url: ${SERVICE_USER_SERVICE_URL:http://localhost:8080}
+
+jwt:
+  secret: ${JWT_SECRET:jMZfY8JLznGm7Yc37p3P3mR20zuwcdxPX6vOcBfD9PM=}
+  expirationMillis: ${JWT_EXPIRATION:3600000} # 1 hour
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web.reactive.function.client.ExchangeFunctions: DEBUG
+    org.levalnik: DEBUG

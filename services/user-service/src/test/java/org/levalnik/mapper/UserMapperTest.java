@@ -1,7 +1,7 @@
 //package org.levalnik.mapper;
 //
 //import org.levalnik.enums.userEnum.UserStatus;
-//import org.levalnik.user.DTO.UserDTO;
+//import org.levalnik.dto.userDto.UserDTO;
 //import org.levalnik.user.mapper.UserMapper;
 //import org.levalnik.user.model.User;
 //import org.junit.jupiter.api.BeforeEach;

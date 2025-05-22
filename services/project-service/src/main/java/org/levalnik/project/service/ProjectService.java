@@ -4,12 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.levalnik.dto.projectDto.ProjectRequest;
+import org.levalnik.dto.projectDto.ProjectResponse;
 import org.levalnik.outbox.model.OutboxEvent;
 import org.levalnik.outbox.repository.OutboxEventRepository;
-import org.levalnik.project.DTO.ProjectDTO;
 import org.levalnik.enums.projectEnum.ProjectStatus;
 import org.levalnik.kafkaEvent.projectKafkaEvent.*;
-import org.levalnik.kafka.producer.KafkaProducer;
 import org.levalnik.project.model.Project;
 import org.levalnik.kafkaEvent.projectKafkaEvent.ProjectCreatedEvent;
 import org.levalnik.project.repository.ProjectRepository;
@@ -37,9 +37,9 @@ public class ProjectService {
     private final OutboxEventRepository outboxEventRepository;
 
     @Transactional(readOnly = true)
-    public Page<ProjectDTO> getProjectsByStatus(ProjectStatus status, Pageable pageable) {
+    public Page<ProjectResponse> getProjectsByStatus(ProjectStatus status, Pageable pageable) {
         log.info("Fetching projects with status: {}", status);
-        Page<ProjectDTO> projects = projectRepository.findByStatus(status, pageable)
+        Page<ProjectResponse> projects = projectRepository.findByStatus(status, pageable)
                 .map(projectMapper::toDTO);
         log.info("Found {} projects with status {}", projects.getTotalElements(), status);
         return projects;
@@ -74,7 +74,7 @@ public class ProjectService {
     }
 
     @Transactional
-    public ProjectDTO createProject(ProjectDTO projectDTO) {
+    public ProjectResponse createProject(ProjectRequest projectDTO) {
         if(projectRepository.existsById(projectDTO.getId())) {
             throw new IllegalArgumentException("Project with id " + projectDTO.getId() + " already exists");
         }
@@ -115,7 +115,7 @@ public class ProjectService {
     }
 
     @Transactional
-    public ProjectDTO updateProject(UUID id, ProjectDTO projectDTO) {
+    public ProjectResponse updateProject(UUID id, ProjectRequest projectDTO) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Project with id " + id + " not found"));
         project.setTitle(projectDTO.getTitle());
