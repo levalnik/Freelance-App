@@ -1,39 +1,39 @@
-# Freelance Platform Microservices
+# Платформа для фриланса на основе микросервисов
 
-A microservices-based freelance platform built with Spring Boot, featuring project management, bidding system, user management, and security services.
+Микросервисная платформа для фриланса, построенная на Spring Boot, с системами управления проектами, ставками, пользователями и безопасности.
 
-## 🏗 Architecture
+## 🏗 Архитектура
 
-The platform consists of the following microservices:
+Платформа состоит из следующих микросервисов:
 
-- **User Service** (Port: 8080)
-  - User management
-  - Profile handling
-  - User authentication data
+- **Сервис пользователей** (Порт: 8080)
+  - Управление пользователями
+  - Обработка профилей
+  - Данные аутентификации пользователей
 
-- **Project Service** (Port: 8081)
-  - Project management
-  - Project status tracking
-  - Project categories and tags
+- **Сервис проектов** (Порт: 8081)
+  - Управление проектами
+  - Отслеживание статуса проектов
+  - Категории и теги проектов
 
-- **Bid Service** (Port: 8083)
-  - Bid management
-  - Bid status tracking
-  - Bid notifications
+- **Сервис ставок** (Порт: 8083)
+  - Управление ставками
+  - Отслеживание статуса ставок
+  - Уведомления о ставках
 
-- **Security Service** (Port: 8084)
-  - JWT-based authentication
-  - Authorization
-  - Token management
+- **Сервис безопасности** (Порт: 8084)
+  - Аутентификация на основе JWT
+  - Авторизация
+  - Управление токенами
 
-- **Common Module**
-  - Shared DTOs
-  - Common utilities
-  - Custom exceptions and a exception handler
+- **Общий модуль**
+  - Общие DTO
+  - Общие утилиты
+  - Пользовательские исключения и обработчик исключений
 
-## 🛠 Technology Stack
+## 🛠 Технологический стек
 
-### Core Technologies
+### Основные технологии
 - Java 23
 - Spring Boot 3.4.3
 - Spring Security
@@ -42,33 +42,33 @@ The platform consists of the following microservices:
 - PostgreSQL
 - Docker & Docker Compose
 
-### Database
-- PostgreSQL (Multiple instances)
+### База данных
+- PostgreSQL (Несколько экземпляров)
 
-### Security
+### Безопасность
 - JWT (JSON Web Tokens)
 - Spring Security
-- BCrypt Password Encoding
+- Кодирование паролей BCrypt
 
-### Monitoring & Management
+### Мониторинг и управление
 - Spring Boot Actuator
-- Health Checks
-- Metrics
+- Проверка состояния сервисов
+- Метрики
 
-### Build Tools
+### Инструменты сборки
 - Maven
 - Docker
 - Docker Compose
 
-### Testing
+### Тестирование
 - JUnit 5
 - Mockito
 - Spring Boot Test
 
-### Additional Features
-- Liquibase and Flyway for database migrations
-- MapStruct for object mapping
-- Lombok for reducing boilerplate
-- CORS configuration
-- Environment-specific configurations (local/docker)
-- Outbox pattern for distributed transactions
+### Дополнительные возможности
+- Liquibase и Flyway для миграций базы данных
+- MapStruct для маппинга объектов
+- Lombok для сокращения шаблонного кода
+- Конфигурация CORS
+- Конфигурации для разных окружений (локальное/docker)
+- Паттерн Outbox для распределенных транзакций
